@@ -1,6 +1,7 @@
 package com.ac.yy.Entity;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -29,6 +30,6 @@ public class CourseReviewEntity {
     private int studentId;
 
     @Column
-    @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
     private LocalDateTime reg_date;
 }
