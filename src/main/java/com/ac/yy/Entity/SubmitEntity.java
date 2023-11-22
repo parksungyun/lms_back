@@ -1,0 +1,43 @@
+package com.ac.yy.Entity;
+
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.Date;
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Entity
+@Table(name = "submits")
+public class SubmitEntity {
+    @Id
+    @Column(name = "submit_id")
+    private int submitId;
+
+    @Column(name = "homework_id")
+    private int homeworkId;
+
+    @Column(name = "student_id")
+    private int studentId;
+
+    @Column(name = "submit_content")
+    private String submitContent;
+
+    @Column(name = "submit_file_name")
+    private String submitFileName;
+
+    @Column(name = "submit_file_url")
+    private String submitFileUrl;
+
+    @Column
+    @CreationTimestamp
+    private LocalDateTime submit_reg_date;
+
+    @Column
+    @UpdateTimestamp
+    private LocalDateTime submit_mod_date;
+}
