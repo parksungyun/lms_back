@@ -4,7 +4,10 @@ import com.ac.yy.DTO.LoginDTO;
 import com.ac.yy.DTO.LoginResponseDTO;
 import com.ac.yy.DTO.RegisterDTO;
 import com.ac.yy.DTO.ResponseDTO;
+import com.ac.yy.Entity.UserEntity;
+import com.ac.yy.Repository.UserRepository;
 import com.ac.yy.Service.AuthService;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
