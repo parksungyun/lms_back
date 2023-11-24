@@ -18,7 +18,7 @@ public class AcademicEntity {
     @Column(name = "academic_id")
     private int academicId;
 
-    @Column
+    @Column(nullable = false, unique = true)
     private int uid;
 
     @Column

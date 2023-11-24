@@ -19,7 +19,7 @@ public class StudentEntity {
     @Column(name = "student_id")
     private int studentId;
 
-    @Column
+    @Column(nullable = false, unique = true)
     private int uid;
 
     @Column(name = "course_id")
