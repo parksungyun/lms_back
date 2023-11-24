@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/api/auth")
 public class AuthController {
     @Autowired AuthService authService;
+    // 회원가입
     @PostMapping(value = "/register")
     public ResponseDTO<?> register(@RequestBody RegisterDTO requestBody) {
         System.out.println(requestBody.toString());
@@ -22,6 +23,7 @@ public class AuthController {
         return result;
     }
 
+    // 로그인
     @PostMapping(value = "/login")
     public ResponseDTO<LoginResponseDTO> login(@RequestBody LoginDTO requestBody) {
         System.out.println(requestBody.toString());

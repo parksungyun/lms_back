@@ -19,7 +19,7 @@ public class AuthService {
         try {
             userRepository.save(userEntity);
         } catch (Exception e) {
-            ResponseDTO.setFailed("Database Error");
+            return ResponseDTO.setFailed("Database Error");
         }
         return ResponseDTO.setSuccess("Register Success!", null);
     }

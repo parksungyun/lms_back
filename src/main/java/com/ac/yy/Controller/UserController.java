@@ -9,9 +9,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/api/user")
 public class UserController {
     @Autowired UserService userService;
+    // 유저 정보 불러오기(User-Student Or User-Academic)
     @GetMapping("/{id}")
     public ResponseDTO<?> getUserByUid(@PathVariable("id") int id) {
-        ResponseDTO<?> result = userService.getUser(id);
+        ResponseDTO<?> result = userService.getUserByUid(id);
         return result;
     }
 }
