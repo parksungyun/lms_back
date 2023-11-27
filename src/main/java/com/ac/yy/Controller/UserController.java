@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/api/user")
 public class UserController {
     @Autowired UserService userService;
-    // 유저 정보 불러오기(User-Student Or User-Academic)
+    // uid로 유저 정보 불러오기(User-Student Or User-Academic)
     @GetMapping("/{id}")
     public ResponseDTO<?> getUserByUid(@PathVariable("id") int id) {
         ResponseDTO<?> result = userService.getUserByUid(id);
@@ -34,6 +34,20 @@ public class UserController {
     @GetMapping("/managers")
     public ResponseDTO<?> getAllManagers() {
         ResponseDTO<?> result = userService.getAcademicsByDept(0);
+        return result;
+    }
+
+    // studentId로 student 정보 불러오기
+    @GetMapping("/student/{id}")
+    public ResponseDTO<?> getStudentByStudentId(@PathVariable("id") int id) {
+        ResponseDTO<?> result = userService.getStudentByStudentId(id);
+        return result;
+    }
+
+    // academicId로 academic 정보 불러오기
+    @GetMapping("/academic/{id}")
+    public ResponseDTO<?> getAcademicByAcademicId(@PathVariable("id") int id) {
+        ResponseDTO<?> result = userService.getAcademicByAcademicId(id);
         return result;
     }
 }
