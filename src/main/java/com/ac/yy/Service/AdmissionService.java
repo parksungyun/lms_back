@@ -37,4 +37,23 @@ public class AdmissionService {
 
         return ResponseDTO.setSuccess("All Admission Questions Load Success!", posts);
     }
+
+    // 입학상담 게시글 정보 불러오기
+    public ResponseDTO<?> getAdmissionQuestionById(int id) {
+        AdmissionPostDTO post = new AdmissionPostDTO();
+        AdmissionQuestionEntity temp = null;
+
+        try {
+            temp = admissionQuestionRepository.findById(id).get();
+            post.setQuestion(temp);
+            if(admissionAnswerRepository.existsById(id)){
+                post.setAnswer(admissionAnswerRepository.findById(id).get());
+            }
+            else post.setAnswer(null);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+
+        return ResponseDTO.setSuccess("Admission Question Load Success!", post);
+    }
 }

@@ -92,4 +92,34 @@ public class UserService {
 
         return ResponseDTO.setSuccess("Academics Load Success!", academics);
     }
+
+    public ResponseDTO<?> getStudentByStudentId(int id) {
+        StudentDTO student = new StudentDTO();
+        StudentEntity temp = null;
+
+        try {
+            temp = studentRepository.findByStudentId(id).get();
+            student.setStudent(temp);
+            student.setUser(userRepository.findByUid(temp.getUid()).get());
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+
+        return ResponseDTO.setSuccess("Student Load Success!", student);
+    }
+
+    public ResponseDTO<?> getAcademicByAcademicId(int id) {
+        AcademicDTO academic = new AcademicDTO();
+        AcademicEntity temp = null;
+
+        try {
+            temp = academicRepository.findByAcademicId(id).get();
+            academic.setAcademic(temp);
+            academic.setUser(userRepository.findByUid(temp.getUid()).get());
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+
+        return ResponseDTO.setSuccess("Academic Load Success!", academic);
+    }
 }

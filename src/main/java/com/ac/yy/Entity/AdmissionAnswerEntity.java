@@ -19,10 +19,10 @@ public class AdmissionAnswerEntity {
     private int admissionQuestionId;
 
     @Column(name = "academic_id")
-    private int academic_id;
+    private int academicId;
 
     @Column(name = "answer_content")
-    private String answer_content;
+    private String answerContent;
 
     @Column
     @CreationTimestamp
