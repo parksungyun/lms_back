@@ -26,4 +26,11 @@ public class CourseController {
         ResponseDTO<?> result = courseService.getCourseByAcademicId(id);
         return result;
     }
+
+    // 현재 모집중인 과정 정보 불러오기
+    @GetMapping("/recruit")
+    public ResponseDTO<?> getRecruitingCourses() {
+        ResponseDTO<?> result = courseService.getRecruitingCourses();
+        return result;
+    }
 }

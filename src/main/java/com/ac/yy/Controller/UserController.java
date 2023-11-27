@@ -15,4 +15,25 @@ public class UserController {
         ResponseDTO<?> result = userService.getUserByUid(id);
         return result;
     }
+
+    // 과정에 속한 학생 정보 불러오기
+    @GetMapping("/students/{id}")
+    public ResponseDTO<?> getStudentsByCourseId(@PathVariable("id") int id) {
+        ResponseDTO<?> result = userService.getStudentsByCourseId(id);
+        return result;
+    }
+
+    // 모든 강사 정보 불러오기
+    @GetMapping("/trainers")
+    public ResponseDTO<?> getAllTrainers() {
+        ResponseDTO<?> result = userService.getAcademicsByDept(1);
+        return result;
+    }
+    
+    // 모든 매니저 정보 불러오기
+    @GetMapping("/managers")
+    public ResponseDTO<?> getAllManagers() {
+        ResponseDTO<?> result = userService.getAcademicsByDept(0);
+        return result;
+    }
 }

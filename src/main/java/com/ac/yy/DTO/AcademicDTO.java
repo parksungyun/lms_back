@@ -13,4 +13,5 @@ import lombok.*;
 public class AcademicDTO {
     private UserEntity user;
     private AcademicEntity academic;
+    private String position;
 }
