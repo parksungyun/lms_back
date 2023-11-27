@@ -1,9 +1,6 @@
 package com.ac.yy.Service;
 
-import com.ac.yy.DTO.LoginDTO;
-import com.ac.yy.DTO.LoginResponseDTO;
-import com.ac.yy.DTO.RegisterDTO;
-import com.ac.yy.DTO.ResponseDTO;
+import com.ac.yy.DTO.*;
 import com.ac.yy.Entity.UserEntity;
 import com.ac.yy.Repository.UserRepository;
 import com.ac.yy.Security.TokenProvider;
@@ -53,5 +50,53 @@ public class AuthService {
         LoginResponseDTO loginResponseDTO = new LoginResponseDTO(token, expireTime, userEntity);
         System.out.println(loginResponseDTO);
         return ResponseDTO.setSuccess("Login Success", loginResponseDTO);
+    }
+
+    public ResponseDTO<?> findID(FindIdDTO dto) {
+        String userName = dto.getUserName();
+        String userPhone = dto.getUserPhone();
+
+        System.out.println(userName);
+        System.out.println(userPhone);
+
+        try {
+            boolean existed = userRepository.existsByUserNameAndUserPhone(userName, userPhone);
+            if(!existed) {
+                return ResponseDTO.setFailed("ID Info is Wrong");
+            }
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        UserEntity userEntity = null;
+        try {
+            userEntity = userRepository.findByUserNameAndUserPhone(userName, userPhone).get();
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Find ID Success", userEntity.getUserId());
+    }
+
+    public ResponseDTO<?> findPW(FindPwDTO dto) {
+        String userId = dto.getUserId();
+        String userPhone = dto.getUserPhone();
+
+        System.out.println(userId);
+        System.out.println(userPhone);
+
+        try {
+            boolean existed = userRepository.existsByUserIdAndUserPhone(userId, userPhone);
+            if(!existed) {
+                return ResponseDTO.setFailed("PW Info is Wrong");
+            }
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        UserEntity userEntity = null;
+        try {
+            userEntity = userRepository.findByUserIdAndUserPhone(userId, userPhone).get();
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Find PW Success", null);
     }
 }

@@ -1,9 +1,6 @@
 package com.ac.yy.Controller;
 
-import com.ac.yy.DTO.LoginDTO;
-import com.ac.yy.DTO.LoginResponseDTO;
-import com.ac.yy.DTO.RegisterDTO;
-import com.ac.yy.DTO.ResponseDTO;
+import com.ac.yy.DTO.*;
 import com.ac.yy.Entity.UserEntity;
 import com.ac.yy.Repository.UserRepository;
 import com.ac.yy.Service.AuthService;
@@ -28,6 +25,22 @@ public class AuthController {
     public ResponseDTO<LoginResponseDTO> login(@RequestBody LoginDTO requestBody) {
         System.out.println(requestBody.toString());
         ResponseDTO<LoginResponseDTO> result = authService.login(requestBody);
+        return result;
+    }
+
+    //아이디 찾기
+    @PostMapping(value = "/findID")
+    public ResponseDTO<?> findID(@RequestBody FindIdDTO requestBody){
+        System.out.println(requestBody.toString());
+        ResponseDTO<?> result = authService.findID(requestBody);
+        return result;
+    }
+
+    //비밀번호 찾기
+    @PostMapping(value = "/findPW")
+    public ResponseDTO<?> findPW(@RequestBody FindPwDTO requestBody){
+        System.out.println(requestBody.toString());
+        ResponseDTO<?> result = authService.findPW(requestBody);
         return result;
     }
 }
