@@ -30,7 +30,7 @@ public class StudyEntity {
     @Column(name = "progress_time")
     private int progressTime;
 
-    @Column
+    @Column(name = "study_date")
     @CreationTimestamp
-    private LocalDateTime study_date;
+    private LocalDateTime studyDate;
 }

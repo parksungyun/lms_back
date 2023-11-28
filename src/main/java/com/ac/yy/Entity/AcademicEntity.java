@@ -5,6 +5,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -39,11 +40,11 @@ public class AcademicEntity {
     @Column
     private int available;
 
-    @Column
+    @Column(name = "reg_date")
     @CreationTimestamp
-    private Date reg_date;
+    private LocalDateTime regDate;
 
-    @Column
+    @Column(name = "mod_date")
     @UpdateTimestamp
-    private Date mod_date;
+    private LocalDateTime modDate;
 }

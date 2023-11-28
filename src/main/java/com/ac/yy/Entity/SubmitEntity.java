@@ -33,11 +33,11 @@ public class SubmitEntity {
     @Column(name = "submit_file_url")
     private String submitFileUrl;
 
-    @Column
+    @Column(name = "submit_reg_date")
     @CreationTimestamp
-    private LocalDateTime submit_reg_date;
+    private LocalDateTime submitRegDate;
 
-    @Column
+    @Column(name = "submit_mod_date")
     @UpdateTimestamp
-    private LocalDateTime submit_mod_date;
+    private LocalDateTime submitModDate;
 }

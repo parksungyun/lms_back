@@ -1,6 +1,7 @@
 package com.ac.yy.Service;
 
 import com.ac.yy.DTO.AdmissionPostDTO;
+import com.ac.yy.DTO.AdmissionWriteDTO;
 import com.ac.yy.DTO.ResponseDTO;
 import com.ac.yy.Entity.AdmissionQuestionEntity;
 import com.ac.yy.Repository.AdmissionAnswerRepository;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -21,7 +23,7 @@ public class AdmissionService {
         List<AdmissionQuestionEntity> temp = new ArrayList<AdmissionQuestionEntity>();
 
         try {
-            temp = admissionQuestionRepository.findAll();
+            temp = admissionQuestionRepository.findAllByOrderByRegDateDesc();
             temp.forEach(data -> {
                 AdmissionPostDTO tempAdmissionPostDTO = new AdmissionPostDTO();
                 tempAdmissionPostDTO.setQuestion(data);
@@ -55,5 +57,62 @@ public class AdmissionService {
         }
 
         return ResponseDTO.setSuccess("Admission Question Load Success!", post);
+    }
+
+    // 입학상담 게시글 검색
+    public ResponseDTO<?> getAdmissionQuestionsBySearch(String keyword, int type) {
+        List<AdmissionPostDTO> posts = new ArrayList<AdmissionPostDTO>();
+        List<AdmissionQuestionEntity> temp = new ArrayList<AdmissionQuestionEntity>();
+
+        try {
+            // 제목으로 검색
+            if(type == 1 || type == 0) {
+                temp = admissionQuestionRepository.findByTitleContainingOrderByRegDateDesc(keyword);
+                temp.forEach(data -> {
+                    AdmissionPostDTO tempAdmissionPostDTO = new AdmissionPostDTO();
+                    tempAdmissionPostDTO.setQuestion(data);
+                    if(admissionAnswerRepository.existsById(data.getAdmissionQuestionId())) {
+                        tempAdmissionPostDTO.setAnswer(admissionAnswerRepository.findById(data.getAdmissionQuestionId()).get());
+                    }
+                    else {
+                        tempAdmissionPostDTO.setAnswer(null);
+                    }
+                    posts.add(tempAdmissionPostDTO);
+                });
+            }
+            // 작성자로 검색
+            if(type == 2 || type == 0) {
+                temp = admissionQuestionRepository.findByWriterNameContainingOrderByRegDateDesc(keyword);
+                temp.forEach(data -> {
+                    AdmissionPostDTO tempAdmissionPostDTO = new AdmissionPostDTO();
+                    tempAdmissionPostDTO.setQuestion(data);
+                    if(admissionAnswerRepository.existsById(data.getAdmissionQuestionId())) {
+                        tempAdmissionPostDTO.setAnswer(admissionAnswerRepository.findById(data.getAdmissionQuestionId()).get());
+                    }
+                    else {
+                        tempAdmissionPostDTO.setAnswer(null);
+                    }
+                    posts.add(tempAdmissionPostDTO);
+                });
+            }
+            if(type == 0) {
+                Collections.sort(posts, (o1, o2) -> o2.getQuestion().getRegDate().compareTo(o1.getQuestion().getRegDate()));
+            }
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+
+        return ResponseDTO.setSuccess("Admission Questions Search Success!", posts);
+    }
+
+    public ResponseDTO<?> writeAdmissionQuestion(AdmissionWriteDTO dto) {
+        AdmissionQuestionEntity admissionQuestionEntity = new AdmissionQuestionEntity(dto);
+        try {
+            admissionQuestionRepository.save(admissionQuestionEntity);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+
+        return ResponseDTO.setSuccess("Admission Question Write Success!", null);
     }
 }

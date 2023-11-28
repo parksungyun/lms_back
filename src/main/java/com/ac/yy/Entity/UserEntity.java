@@ -38,16 +38,17 @@ public class UserEntity {
     @Column(name = "user_phone")
     private String userPhone;
 
+
     @Column(name = "user_email")
     private String userEmail;
 
-    @Column
+    @Column(name = "reg_date")
     @CreationTimestamp
-    private LocalDateTime reg_date;
+    private LocalDateTime regDate;
 
-    @Column
+    @Column(name = "mod_date")
     @UpdateTimestamp
-    private LocalDateTime mod_date;
+    private LocalDateTime modDate;
 
     public UserEntity(RegisterDTO dto) {
         this.userId = dto.getUserId();
