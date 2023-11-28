@@ -7,10 +7,7 @@ import com.ac.yy.Entity.AcademicEntity;
 import com.ac.yy.Entity.PositionEntity;
 import com.ac.yy.Entity.StudentEntity;
 import com.ac.yy.Entity.UserEntity;
-import com.ac.yy.Repository.AcademicRepository;
-import com.ac.yy.Repository.PositionRepository;
-import com.ac.yy.Repository.StudentRepository;
-import com.ac.yy.Repository.UserRepository;
+import com.ac.yy.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +20,8 @@ public class UserService {
     @Autowired StudentRepository studentRepository;
     @Autowired AcademicRepository academicRepository;
     @Autowired PositionRepository positionRepository;
+    @Autowired CourseRepository courseRepository;
+    @Autowired SubjectRepository subjectRepository;
     public ResponseDTO<?> getUserByUid(int uid) {
         StudentDTO studentDTO = new StudentDTO();
         AcademicDTO academicDTO = new AcademicDTO();
@@ -44,6 +43,13 @@ public class UserService {
             if(isAcademicExist) {
                 academicDTO.setUser(user);
                 academicDTO.setAcademic(academicRepository.findByUid(user.getUid()).get());
+                academicDTO.setPosition(positionRepository.findById(academicDTO.getAcademic().getPosition()).get().getPositionName());
+                if(academicDTO.getAcademic().getDept() == 0) {
+                    academicDTO.setNum(courseRepository.findByAcademicId(academicDTO.getAcademic().getAcademicId()).size());
+                }
+                else {
+                    academicDTO.setNum(subjectRepository.findByAcademicId(academicDTO.getAcademic().getAcademicId()).size());
+                }
                 System.out.println(academicDTO);
                 return ResponseDTO.setSuccess("Academic Load Success!", academicDTO);
             }
@@ -84,6 +90,12 @@ public class UserService {
                 tempAcademicDTO.setUser(userRepository.findByUid(data.getUid()).get());
                 PositionEntity tempPositionEntity = positionRepository.findById(tempAcademicDTO.getAcademic().getPosition()).get();
                 tempAcademicDTO.setPosition(tempPositionEntity.getPositionName());
+                if(data.getDept() == 0) {
+                    tempAcademicDTO.setNum(courseRepository.findByAcademicId(data.getAcademicId()).size());
+                }
+                else {
+                    tempAcademicDTO.setNum(subjectRepository.findByAcademicId(data.getAcademicId()).size());
+                }
                 academics.add(tempAcademicDTO);
             });
         } catch (Exception e) {
