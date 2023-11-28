@@ -134,4 +134,22 @@ public class UserService {
 
         return ResponseDTO.setSuccess("Academic Load Success!", academic);
     }
+
+    public ResponseDTO<?> getUserByUserId(String userId) {
+        UserEntity userEntity = null;
+
+        try {
+            userEntity = userRepository.findByUserId(userId).get();
+            userEntity.setUserPw("");
+            boolean isStudent = studentRepository.existsByUid(userEntity.getUid());
+            boolean isAcademic = academicRepository.existsByUid(userEntity.getUid());
+            if(isStudent || isAcademic) {
+                userEntity = null;
+            }
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+
+        return ResponseDTO.setSuccess("User Load Success!", userEntity);
+    }
 }

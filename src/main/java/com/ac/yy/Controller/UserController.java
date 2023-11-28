@@ -50,4 +50,11 @@ public class UserController {
         ResponseDTO<?> result = userService.getAcademicByAcademicId(id);
         return result;
     }
+
+    //userId로 user 정보 불러오기
+    @GetMapping("/search/{id}")
+    public ResponseDTO<?> getUserByUserId(@PathVariable("id") String userId) {
+        ResponseDTO<?> result = userService.getUserByUserId(userId);
+        return result;
+    }
 }
