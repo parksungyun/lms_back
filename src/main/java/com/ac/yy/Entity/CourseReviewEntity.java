@@ -2,6 +2,7 @@ package com.ac.yy.Entity;
 
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -29,7 +30,7 @@ public class CourseReviewEntity {
     @Column(name = "student_id")
     private int studentId;
 
-    @Column
+    @Column(name = "reg_date")
     @CreationTimestamp
-    private LocalDateTime reg_date;
+    private LocalDateTime regDate;
 }

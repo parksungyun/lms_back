@@ -39,11 +39,11 @@ public class SubjectQuestionEntity {
     @Column
     private int hits;
 
-    @Column
+    @Column(name = "reg_date")
     @CreationTimestamp
-    private LocalDateTime reg_date;
+    private LocalDateTime regDate;
 
-    @Column
+    @Column(name = "mod_date")
     @UpdateTimestamp
-    private LocalDateTime mod_date;
+    private LocalDateTime modDate;
 }

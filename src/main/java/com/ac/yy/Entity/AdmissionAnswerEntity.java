@@ -24,11 +24,11 @@ public class AdmissionAnswerEntity {
     @Column(name = "answer_content")
     private String answerContent;
 
-    @Column
+    @Column(name = "answer_reg_date")
     @CreationTimestamp
-    private LocalDateTime answer_reg_date;
+    private LocalDateTime answerRegDate;
 
-    @Column
+    @Column(name = "answer_mod_date")
     @UpdateTimestamp
-    private LocalDateTime answer_mod_date;
+    private LocalDateTime answerModDate;
 }

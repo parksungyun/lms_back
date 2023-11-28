@@ -1,5 +1,7 @@
 package com.ac.yy.Entity;
 
+import com.ac.yy.DTO.AdmissionWriteDTO;
+import com.ac.yy.DTO.RegisterDTO;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -42,11 +44,22 @@ public class AdmissionQuestionEntity {
     @Column
     private String content;
 
-    @Column
+    @Column(name = "reg_date")
     @CreationTimestamp
-    private LocalDateTime reg_date;
+    private LocalDateTime regDate;
 
-    @Column
+    @Column(name = "mod_date")
     @UpdateTimestamp
-    private LocalDateTime mod_date;
+    private LocalDateTime modDate;
+
+    public AdmissionQuestionEntity(AdmissionWriteDTO dto) {
+        this.postPw = dto.getPostPw();
+        this.writerName = dto.getWriterName();
+        this.age = dto.getAge();
+        this.phone = dto.getPhone();
+        this.finalSchool = dto.getFinalSchool();
+        this.desiredCourse = dto.getDesiredCourse();
+        this.title = dto.getTitle();
+        this.content = dto.getContent();
+    }
 }

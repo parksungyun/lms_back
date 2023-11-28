@@ -27,11 +27,11 @@ public class FeedbackEntity {
     @Column(name = "academic_id")
     private int academicId;
 
-    @Column
+    @Column(name = "feedback_reg_date")
     @CreationTimestamp
-    private LocalDateTime feedback_reg_date;
+    private LocalDateTime feedbackRegDate;
 
-    @Column
+    @Column(name = "feedback_mod_date")
     @UpdateTimestamp
-    private LocalDateTime feedback_mod_date;
+    private LocalDateTime feedbackModDate;
 }
