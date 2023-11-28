@@ -54,4 +54,12 @@ public class AdmissionController {
         ResponseDTO<?> result = admissionService.writeAdmissionQuestion(requestBody);
         return result;
     }
+
+    // 입학 상담 게시글 수정
+    @PostMapping("/{postId}/mod")
+    public ResponseDTO<?> modAdmissionQuestion(@PathVariable int postId, @RequestBody AdmissionWriteDTO requestBody) {
+        System.out.println(requestBody.toString());
+        ResponseDTO<?> result = admissionService.modAdmissionQuestion(postId, requestBody);
+        return result;
+    }
 }
