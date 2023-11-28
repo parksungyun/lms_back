@@ -7,6 +7,8 @@ import com.ac.yy.Security.TokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.xml.ws.Response;
+
 @Service
 public class AuthService {
     @Autowired UserRepository userRepository;
@@ -98,5 +100,54 @@ public class AuthService {
             return ResponseDTO.setFailed("Database Error");
         }
         return ResponseDTO.setSuccess("Find PW Success", null);
+    }
+
+    public ResponseDTO<?> checkID(CheckIdDTO dto) {
+        String userId = dto.getUserId();
+
+        System.out.println(userId);
+
+        try {
+            boolean existed = userRepository.existsByUserId(userId);
+            if(!existed) {
+                return ResponseDTO.setFailed("Check ID Info is Wrong");
+            }
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        UserEntity userEntity = null;
+        try {
+            userEntity = userRepository.findByUserId(userId).get();
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Find ID Success", userEntity.getUserId());
+    }
+
+    public ResponseDTO<?> changePW(LoginDTO dto) {
+        String userId = dto.getUserId();
+        String userPw = dto.getUserPw();
+
+        System.out.println(userId);
+        System.out.println(userPw);
+
+        try {
+            boolean existed = userRepository.existsByUserId(userId);
+            if(!existed) {
+                return ResponseDTO.setFailed("Check ID Info is Wrong");
+            }
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error1");
+        }
+
+        try {
+            int result = userRepository.modifyingUserPwByUserId(userPw,userId);
+            if(result == 0) return ResponseDTO.setFailed("Error");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDTO.setFailed("Database Error");
+        }
+
+        return ResponseDTO.setSuccess("ChangePW Success", null);
     }
 }

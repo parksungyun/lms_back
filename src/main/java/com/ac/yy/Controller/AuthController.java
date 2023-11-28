@@ -43,4 +43,20 @@ public class AuthController {
         ResponseDTO<?> result = authService.findPW(requestBody);
         return result;
     }
+
+    //아이디 중복체크
+    @PostMapping(value = "/checkID")
+    public ResponseDTO<?> checkID(@RequestBody CheckIdDTO requestBody){
+        System.out.println(requestBody.toString());
+        ResponseDTO<?> result = authService.checkID(requestBody);
+        return result;
+    }
+
+    //비밀번호 변경
+    @PostMapping(value = "/changePW")
+    public ResponseDTO<?> changePW(@RequestBody LoginDTO requestBody){
+        System.out.println(requestBody.toString());
+        ResponseDTO<?> result = authService.changePW(requestBody);
+        return result;
+    }
 }
