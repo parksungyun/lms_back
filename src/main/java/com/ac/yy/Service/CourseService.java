@@ -59,4 +59,14 @@ public class CourseService {
 
         return ResponseDTO.setSuccess("Recruiting Courses Load Success!", courses);
     }
+
+    public ResponseDTO<?> getAllCourses() {
+        List<CourseEntity> courses = new ArrayList<CourseEntity>();
+        try {
+            courses = courseRepository.findAll();
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("All Courses Load Success!", courses);
+    }
 }

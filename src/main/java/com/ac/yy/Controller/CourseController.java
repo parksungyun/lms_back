@@ -33,4 +33,11 @@ public class CourseController {
         ResponseDTO<?> result = courseService.getRecruitingCourses();
         return result;
     }
+
+    // 모든 과정 불러오기
+    @GetMapping("/all")
+    public ResponseDTO<?> getAllCourses() {
+        ResponseDTO<?> result = courseService.getAllCourses();
+        return result;
+    }
 }
