@@ -115,4 +115,20 @@ public class AdmissionService {
 
         return ResponseDTO.setSuccess("Admission Question Write Success!", null);
     }
+
+    public ResponseDTO<?> modAdmissionQuestion(int postId, AdmissionWriteDTO dto) {
+        try {
+            AdmissionQuestionEntity entity = admissionQuestionRepository.findById(postId).get();
+
+            AdmissionQuestionEntity temp = new AdmissionQuestionEntity(dto);
+            temp.setAdmissionQuestionId(postId);
+            temp.setRegDate(entity.getRegDate());
+
+            admissionQuestionRepository.save(temp);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+
+        return ResponseDTO.setSuccess("Admission Question Modify Success!", null);
+    }
 }
