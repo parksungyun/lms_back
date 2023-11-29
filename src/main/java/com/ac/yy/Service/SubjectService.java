@@ -1,21 +1,29 @@
 package com.ac.yy.Service;
 
-import com.ac.yy.DTO.ResponseDTO;
-import com.ac.yy.DTO.SubjectDTO;
-import com.ac.yy.Entity.CourseEntity;
-import com.ac.yy.Entity.SubjectEntity;
-import com.ac.yy.Repository.CourseRepository;
-import com.ac.yy.Repository.SubjectRepository;
+import com.ac.yy.DTO.*;
+import com.ac.yy.Entity.*;
+import com.ac.yy.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class SubjectService {
     @Autowired SubjectRepository subjectRepository;
     @Autowired CourseRepository courseRepository;
+    @Autowired SubjectBoardRepository subjectBoardRepository;
+    @Autowired HomeworkRepository homeworkRepository;
+    @Autowired SubmitRepository submitRepository;
+    @Autowired FeedbackRepository feedbackRepository;
+    @Autowired LectureRepository lectureRepository;
+    @Autowired StudyRepository studyRepository;
+    @Autowired SubjectQuestionRepository subjectQuestionRepository;
+    @Autowired SubjectAnswerRepository subjectAnswerRepository;
+    @Autowired StudentRepository studentRepository;
     public ResponseDTO<?> getSubjectById(int id) {
         SubjectDTO subject = new SubjectDTO();
         SubjectEntity subjectTemp = null;
@@ -66,5 +74,340 @@ public class SubjectService {
             return ResponseDTO.setFailed("Database Error");
         }
         return ResponseDTO.setSuccess("Subjects Load Success!", subjects);
+    }
+
+    public ResponseDTO<?> getBoardBySubjectId(int id) {
+        List<SubjectBoardEntity> board = new ArrayList<SubjectBoardEntity>();
+        try {
+            board = subjectBoardRepository.findBySubjectIdOrderByRegDateDesc(id);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Subject Board Load Success!", board);
+    }
+
+    public ResponseDTO<?> getBoardByAcademicId(int id) {
+        List<SubjectBoardEntity> board = new ArrayList<SubjectBoardEntity>();
+        try {
+            board = subjectBoardRepository.findByAcademicId(id);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Subject Board Load Success!", board);
+    }
+
+    public ResponseDTO<?> getBoardBySubjectBoardId(int id) {
+        SubjectBoardEntity post = null;
+        try {
+            subjectBoardRepository.modifyingHitsBySubjectBoardId(id);
+            post = subjectBoardRepository.findById(id).get();
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Subject Board Post Load Success!", post);
+    }
+
+    public ResponseDTO<?> getHomeworksBySubjectId(int id) {
+        List<HomeworkEntity> homeworks = new ArrayList<HomeworkEntity>();
+        try {
+            homeworks = homeworkRepository.findBySubjectIdOrderByRegDateDesc(id);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Homeworks Load Success!", homeworks);
+    }
+
+    public ResponseDTO<?> getHomeworksByAcademicId(int id) {
+        List<HomeworkEntity> homeworks = new ArrayList<HomeworkEntity>();
+        try {
+            homeworks = homeworkRepository.findByAcademicId(id);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Homeworks Load Success!", homeworks);
+    }
+
+    public ResponseDTO<?> getHomeworkByHomeworkId(int id) {
+        HomeworkEntity post = null;
+        try {
+            post = homeworkRepository.findById(id).get();
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Homework Post Load Success!", post);
+    }
+
+    public ResponseDTO<?> getLecturesBySubjectId(int id) {
+        List<LectureEntity> lectures = new ArrayList<LectureEntity>();
+        try {
+            lectures = lectureRepository.findBySubjectIdOrderByRegDateDesc(id);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Lectures Load Success!", lectures);
+    }
+
+    public ResponseDTO<?> getLecturesByAcademicId(int id) {
+        List<LectureEntity> lectures = new ArrayList<LectureEntity>();
+        try {
+            lectures = lectureRepository.findByAcademicId(id);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Lectures Load Success!", lectures);
+    }
+
+    public ResponseDTO<?> getLectureByLectureId(int id) {
+        LectureEntity post = null;
+        try {
+            lectureRepository.modifyingHitsByLectureId(id);
+            post = lectureRepository.findById(id).get();
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Lecture Post Load Success!", post);
+    }
+
+    public ResponseDTO<?> getQnaBySubjectId(int id) {
+        List<SubjectQnaDTO> subjectQnaDTO = new ArrayList<SubjectQnaDTO>();
+        List<SubjectQuestionEntity> temp = new ArrayList<SubjectQuestionEntity>();
+        try {
+            temp = subjectQuestionRepository.findBySubjectIdOrderByRegDateDesc(id);
+            temp.forEach(data -> {
+                SubjectQnaDTO tempSubjectQnaDTO = new SubjectQnaDTO();
+                SubjectAnswerEntity answer = null;
+                if(subjectAnswerRepository.existsById(data.getSubjectQuestionId())) {
+                    answer = subjectAnswerRepository.findById(data.getSubjectQuestionId()).get();
+                }
+                tempSubjectQnaDTO.setQuestion(data);
+                tempSubjectQnaDTO.setAnswer(answer);
+                subjectQnaDTO.add(tempSubjectQnaDTO);
+            });
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Qnas Load Success!", subjectQnaDTO);
+    }
+
+    public ResponseDTO<?> getQnaBySubjectQuestionId(int id) {
+        SubjectQnaDTO subjectQnaDTO = new SubjectQnaDTO();
+        try {
+            subjectQuestionRepository.modifyingHitsBySubjectQuestionId(id);
+            SubjectQuestionEntity question = subjectQuestionRepository.findById(id).get();
+            SubjectAnswerEntity answer = null;
+            if(subjectAnswerRepository.existsById(id)) {
+                answer = subjectAnswerRepository.findById(id).get();
+            }
+            subjectQnaDTO.setQuestion(question);
+            subjectQnaDTO.setAnswer(answer);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Qna Post Load Success!", subjectQnaDTO);
+    }
+
+    public ResponseDTO<?> getQnaByStudentId(int id) {
+        List<SubjectQnaDTO> subjectQnaDTO = new ArrayList<SubjectQnaDTO>();
+        List<SubjectQuestionEntity> temp = new ArrayList<SubjectQuestionEntity>();
+        try {
+            temp = subjectQuestionRepository.findByStudentIdOrderByRegDateDesc(id);
+            temp.forEach(data -> {
+                SubjectQnaDTO tempSubjectQnaDTO = new SubjectQnaDTO();
+                SubjectAnswerEntity answer = null;
+                if(subjectAnswerRepository.existsById(data.getSubjectQuestionId())) {
+                    answer = subjectAnswerRepository.findById(data.getSubjectQuestionId()).get();
+                }
+                tempSubjectQnaDTO.setQuestion(data);
+                tempSubjectQnaDTO.setAnswer(answer);
+                subjectQnaDTO.add(tempSubjectQnaDTO);
+            });
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Qnas Load Success!", subjectQnaDTO);
+    }
+
+    public ResponseDTO<?> getQnaByAcademicId(int id) {
+        List<SubjectQnaDTO> subjectQnaDTO = new ArrayList<SubjectQnaDTO>();
+        List<SubjectAnswerEntity> temp = new ArrayList<SubjectAnswerEntity>();
+        try {
+            temp = subjectAnswerRepository.findByAcademicIdOrderByAnswerRegDateDesc(id);
+            temp.forEach(data -> {
+                SubjectQnaDTO tempSubjectQnaDTO = new SubjectQnaDTO();
+                SubjectQuestionEntity question = subjectQuestionRepository.findById(data.getSubjectQuestionId()).get();
+                tempSubjectQnaDTO.setQuestion(question);
+                tempSubjectQnaDTO.setAnswer(data);
+                subjectQnaDTO.add(tempSubjectQnaDTO);
+            });
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Qnas Load Success!", subjectQnaDTO);
+    }
+
+    public ResponseDTO<?> getHomeworksByCourseId(int id) {
+        List<SubjectEntity> subjects = new ArrayList<SubjectEntity>();
+        List<HomeworkEntity> homeworks = new ArrayList<HomeworkEntity>();
+        try {
+            subjects = subjectRepository.findByCourseId(id);
+            subjects.forEach(data -> {
+                homeworks.addAll(homeworkRepository.findBySubjectIdOrderByRegDateDesc(data.getSubjectId()));
+            });
+            Collections.sort(homeworks, (o1, o2) -> o2.getRegDate().compareTo(o1.getRegDate()));
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Homeworks Load Success!", homeworks);
+    }
+
+    public ResponseDTO<?> submitHomework(SubmitWriteDTO dto) {
+        SubmitEntity submit = new SubmitEntity(dto);
+        try {
+            if(submitRepository.existsByStudentIdAndHomeworkId(submit.getStudentId(), submit.getHomeworkId())) {
+                SubmitEntity temp = submitRepository.findByStudentIdAndHomeworkId(submit.getStudentId(), submit.getHomeworkId()).get();
+                temp.setSubmitContent(submit.getSubmitContent());
+                temp.setSubmitFileUrl(submit.getSubmitFileUrl());
+                temp.setSubmitFileName(submit.getSubmitFileName());
+                submitRepository.save(temp);
+            }
+            else {
+                submitRepository.save(submit);
+            }
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Submit Success!", null);
+    }
+
+    public ResponseDTO<?> getSubmitBySubmitId(int id) {
+        SubmitDTO submitDTO = new SubmitDTO();
+        try {
+            submitDTO.setSubmit(submitRepository.findById(id).get());
+            if(feedbackRepository.existsById(id)) {
+                submitDTO.setFeedback(feedbackRepository.findById(id).get());
+            }
+            else submitDTO.setFeedback(null);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Submit Load Success!", submitDTO);
+    }
+    public ResponseDTO<?> getSubmitsByHomeworkId(int id) {
+        List<SubmitDTO> submitDTO = new ArrayList<SubmitDTO>();
+        List<SubmitEntity> temp = new ArrayList<SubmitEntity>();
+        try {
+            temp = submitRepository.findByHomeworkId(id);
+            temp.forEach(data -> {
+                SubmitDTO tempSubmitDTO = new SubmitDTO();
+                tempSubmitDTO.setSubmit(data);
+                if(feedbackRepository.existsById(data.getSubmitId())) {
+                    tempSubmitDTO.setFeedback(feedbackRepository.findById(data.getSubmitId()).get());
+                }
+                else {
+                    tempSubmitDTO.setFeedback(null);
+                }
+                submitDTO.add(tempSubmitDTO);
+            });
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Submit Load Success!", submitDTO);
+    }
+
+    public ResponseDTO<?> feedbackSubmit(FeedbackWriteDTO dto) {
+        try {
+            if(feedbackRepository.existsById(dto.getSubmitId())) {
+                FeedbackEntity temp = feedbackRepository.findById(dto.getSubmitId()).get();
+                temp.setHwScore(dto.getHwScore());
+                temp.setHwComment(dto.getHwComment());
+            }
+            else {
+                FeedbackEntity feedbackEntity = new FeedbackEntity(dto);
+                feedbackRepository.save(feedbackEntity);
+            }
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Feedback Write Success!", null);
+    }
+
+    public ResponseDTO<?> studyLecture(StudyDTO dto) {
+        try {
+            if(studyRepository.existsByStudentIdAndLectureId(dto.getStudentId(), dto.getLectureId())) {
+                StudyEntity temp = studyRepository.findByStudentIdAndLectureId(dto.getStudentId(), dto.getLectureId()).get();
+                LectureEntity lecture = lectureRepository.findById(dto.getLectureId()).get();
+                if(lecture.getLectureTime() <= dto.getProgressTime()) {
+                    temp.setIsStudy(1);
+                }
+            }
+            else {
+                StudyEntity studyEntity = new StudyEntity(dto);
+                LectureEntity lecture = lectureRepository.findById(dto.getLectureId()).get();
+                if(lecture.getLectureTime() <= dto.getProgressTime()) {
+                    studyEntity.setIsStudy(1);
+                }
+                else {
+                    studyEntity.setIsStudy(0);
+                }
+                studyRepository.save(studyEntity);
+            }
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Study Success!", null);
+    }
+
+    public ResponseDTO<?> getProgressByStudentIdAndSubjectId(int studentId, int subjectId) {
+        ProgressDTO dto = new ProgressDTO();
+        AtomicInteger count = new AtomicInteger(0);
+        try {
+            dto.setStudentId(studentId);
+            dto.setSubjectId(subjectId);
+            dto.setSubjectName(subjectRepository.findById(subjectId).get().getSubjectName());
+            List<LectureEntity> lectures = lectureRepository.findBySubjectId(subjectId);
+            dto.setNumOfLecture(lectures.size());
+            lectures.forEach(data -> {
+                if(studyRepository.existsByStudentIdAndLectureId(studentId, data.getLectureId())) {
+                    StudyEntity study = studyRepository.findByStudentIdAndLectureId(studentId, data.getLectureId()).get();
+                    if(study.getIsStudy() == 1) {
+                        count.getAndIncrement();
+                    }
+                }
+            });
+            dto.setNumOfStudy(count.get());
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Progress Load Success!", dto);
+    }
+
+    public ResponseDTO<?> getProgressByStudentId(int studentId) {
+        List<ProgressDTO> progressDTO = new ArrayList<ProgressDTO>();
+        try {
+            int courseId = studentRepository.findByStudentId(studentId).get().getCourseId();
+            List<SubjectEntity> subjects = subjectRepository.findByCourseId(courseId);
+            subjects.forEach(data -> {
+                ProgressDTO dto = new ProgressDTO();
+                AtomicInteger count = new AtomicInteger(0);
+                dto.setStudentId(studentId);
+                dto.setSubjectId(data.getSubjectId());
+                dto.setSubjectName(subjectRepository.findById(data.getSubjectId()).get().getSubjectName());
+                List<LectureEntity> lectures = lectureRepository.findBySubjectId(data.getSubjectId());
+                dto.setNumOfLecture(lectures.size());
+                lectures.forEach(lect -> {
+                    if(studyRepository.existsByStudentIdAndLectureId(studentId, lect.getLectureId())) {
+                        StudyEntity study = studyRepository.findByStudentIdAndLectureId(studentId, lect.getLectureId()).get();
+                        if(study.getIsStudy() == 1) {
+                            count.getAndIncrement();
+                        }
+                    }
+                });
+                dto.setNumOfStudy(count.get());
+                progressDTO.add(dto);
+            });
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Progress Load Success!", progressDTO);
     }
 }
