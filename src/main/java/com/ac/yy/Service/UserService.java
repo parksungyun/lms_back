@@ -174,14 +174,14 @@ public class UserService {
         return ResponseDTO.setSuccess("ChangeAvailable Success!", null);
     }
 
-    public ResponseDTO<?> mod(AcademicAdminDTO dto) {
-            int position;
-        String today = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        String extension = Arrays.toString(dto.getUserPhoto().getName().split("."));
-        dto.getUserPhoto().getName().concat(today);
-        String savePath = System.getProperty("user.dir") + "\\files";
-        try {
-            position = academicRepository.findByPositionName(dto.getUserPosition()).get().getPositionId();
-        }
-    }
-}
+//    public ResponseDTO<?> mod(AcademicAdminDTO dto) {
+//            int position;
+//        String today = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+//        String extension = Arrays.toString(dto.getUserPhoto().getName().split("."));
+//        dto.getUserPhoto().getName().concat(today);
+//        String savePath = System.getProperty("user.dir") + "\\files";
+//        try {
+//            position = academicRepository.findByPositionName(dto.getUserPosition()).get().getPositionId();
+//        }
+//    }
+//}
