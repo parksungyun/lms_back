@@ -59,4 +59,12 @@ public class AuthController {
         ResponseDTO<?> result = authService.changePW(requestBody);
         return result;
     }
+
+    //비밀번호 초기화
+    @GetMapping("/{id}/resetPW")
+    public ResponseDTO<?> resetPW(@PathVariable("id") int id){
+        System.out.println(id);
+        ResponseDTO<?> result = authService.resetPW(id);
+        return result;
+    }
 }

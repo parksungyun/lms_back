@@ -1,5 +1,6 @@
 package com.ac.yy.Service;
 
+import com.ac.yy.DTO.AcademicAdminDTO;
 import com.ac.yy.DTO.AcademicDTO;
 import com.ac.yy.DTO.ResponseDTO;
 import com.ac.yy.DTO.StudentDTO;
@@ -11,8 +12,12 @@ import com.ac.yy.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class UserService {
@@ -128,6 +133,8 @@ public class UserService {
             temp = academicRepository.findByAcademicId(id).get();
             academic.setAcademic(temp);
             academic.setUser(userRepository.findByUid(temp.getUid()).get());
+            PositionEntity tempPositionEntity = positionRepository.findById(academic.getAcademic().getPosition()).get();
+            academic.setPosition(tempPositionEntity.getPositionName());
         } catch (Exception e) {
             return ResponseDTO.setFailed("Database Error");
         }
@@ -151,5 +158,30 @@ public class UserService {
         }
 
         return ResponseDTO.setSuccess("User Load Success!", userEntity);
+    }
+
+    public ResponseDTO<?> changeAvailable(int id, int value) {
+        if (value == 0) {
+            value = 1;
+        } else {value = 0;}
+
+        try {
+            userRepository.modifyingAvailableByUid(id, value);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+
+        return ResponseDTO.setSuccess("ChangeAvailable Success!", null);
+    }
+
+    public ResponseDTO<?> mod(AcademicAdminDTO dto) {
+            int position;
+        String today = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        String extension = Arrays.toString(dto.getUserPhoto().getName().split("."));
+        dto.getUserPhoto().getName().concat(today);
+        String savePath = System.getProperty("user.dir") + "\\files";
+        try {
+            position = academicRepository.findByPositionName(dto.getUserPosition()).get().getPositionId();
+        }
     }
 }

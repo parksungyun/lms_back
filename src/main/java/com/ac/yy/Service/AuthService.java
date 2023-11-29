@@ -150,4 +150,26 @@ public class AuthService {
 
         return ResponseDTO.setSuccess("ChangePW Success", null);
     }
+
+    public ResponseDTO<?> resetPW(int id) {
+        System.out.println(id);
+        String pw = "0000";
+
+        UserEntity userEntity = null;
+
+        try {
+            userEntity = userRepository.findByUid(id).get();
+            userRepository.modifyingUserPwByUid(pw, id);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+//
+//        try {
+//            userRepository.modifyingUserPwByUid(pw, id);
+//        } catch (Exception e) {
+//            return ResponseDTO.setFailed("Database Error");
+//        }
+
+        return ResponseDTO.setSuccess("ResetPW Success", null);
+    }
 }

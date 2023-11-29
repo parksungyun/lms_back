@@ -1,5 +1,6 @@
 package com.ac.yy.Controller;
 
+import com.ac.yy.DTO.AcademicAdminDTO;
 import com.ac.yy.DTO.ResponseDTO;
 import com.ac.yy.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +56,19 @@ public class UserController {
     @GetMapping("/search/{id}")
     public ResponseDTO<?> getUserByUserId(@PathVariable("id") String userId) {
         ResponseDTO<?> result = userService.getUserByUserId(userId);
+        return result;
+    }
+
+    //user에 uid로 상태 활성화 비활성화
+    @GetMapping("/{id}/changeAvailable/{value}")
+    public ResponseDTO<?> changeAvailable(@PathVariable("id") int id, @PathVariable("value") int value) {
+        ResponseDTO<?> result = userService.changeAvailable(id, value);
+        return result;
+    }
+
+    @PostMapping("/mod")
+    public ResponseDTO<?> mod(@RequestBody AcademicAdminDTO dto) {
+        ResponseDTO<?> result = userService.mod(dto);
         return result;
     }
 }
