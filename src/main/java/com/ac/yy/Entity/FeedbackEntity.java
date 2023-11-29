@@ -1,5 +1,6 @@
 package com.ac.yy.Entity;
 
+import com.ac.yy.DTO.FeedbackWriteDTO;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -34,4 +35,11 @@ public class FeedbackEntity {
     @Column(name = "feedback_mod_date")
     @UpdateTimestamp
     private LocalDateTime feedbackModDate;
+
+    public FeedbackEntity(FeedbackWriteDTO dto) {
+        this.submitId = dto.getSubmitId();
+        this.hwScore = dto.getHwScore();
+        this.hwComment = dto.getHwComment();
+        this.academicId = dto.getAcademicId();
+    }
 }

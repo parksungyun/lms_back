@@ -1,5 +1,6 @@
 package com.ac.yy.Entity;
 
+import com.ac.yy.DTO.SubmitWriteDTO;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -40,4 +41,12 @@ public class SubmitEntity {
     @Column(name = "submit_mod_date")
     @UpdateTimestamp
     private LocalDateTime submitModDate;
+
+    public SubmitEntity(SubmitWriteDTO dto) {
+        this.homeworkId = dto.getHomeworkId();
+        this.studentId = dto.getStudentId();
+        this.submitContent = dto.getSubmitContent();
+        this.submitFileName = dto.getSubmitFileName();
+        this.submitFileUrl = dto.getSubmitFileUrl();
+    }
 }

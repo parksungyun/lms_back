@@ -1,5 +1,6 @@
 package com.ac.yy.Entity;
 
+import com.ac.yy.DTO.StudyDTO;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -31,6 +32,12 @@ public class StudyEntity {
     private int progressTime;
 
     @Column(name = "study_date")
-    @CreationTimestamp
+    @UpdateTimestamp
     private LocalDateTime studyDate;
+
+    public StudyEntity(StudyDTO dto) {
+        this.lectureId = dto.getLectureId();
+        this.studentId = dto.getStudentId();
+        this.progressTime = dto.getProgressTime();
+    }
 }

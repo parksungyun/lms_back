@@ -1,7 +1,12 @@
 package com.ac.yy.Service;
 
+import com.ac.yy.DTO.CourseQnaDTO;
 import com.ac.yy.DTO.ResponseDTO;
-import com.ac.yy.Entity.CourseEntity;
+import com.ac.yy.DTO.SubjectQnaDTO;
+import com.ac.yy.Entity.*;
+import com.ac.yy.Repository.CourseAnswerRepository;
+import com.ac.yy.Repository.CourseBoardRepository;
+import com.ac.yy.Repository.CourseQuestionRepository;
 import com.ac.yy.Repository.CourseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +20,9 @@ import java.util.List;
 @Service
 public class CourseService {
     @Autowired CourseRepository courseRepository;
+    @Autowired CourseBoardRepository courseBoardRepository;
+    @Autowired CourseQuestionRepository courseQuestionRepository;
+    @Autowired CourseAnswerRepository courseAnswerRepository;
     public ResponseDTO<?> getCourseById(int id) {
         CourseEntity course = null;
 
@@ -68,5 +76,112 @@ public class CourseService {
             return ResponseDTO.setFailed("Database Error");
         }
         return ResponseDTO.setSuccess("All Courses Load Success!", courses);
+    }
+
+    public ResponseDTO<?> getBoardByCourseId(int id) {
+        List<CourseBoardEntity> board = new ArrayList<CourseBoardEntity>();
+        try {
+            board = courseBoardRepository.findByCourseIdOrderByRegDateDesc(id);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Course Board Load Success!", board);
+    }
+
+    public ResponseDTO<?> getBoardByAcademicId(int id) {
+        List<CourseBoardEntity> board = new ArrayList<CourseBoardEntity>();
+        try {
+            board = courseBoardRepository.findByAcademicId(id);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Course Board Load Success!", board);
+    }
+
+    public ResponseDTO<?> getBoardByCourseBoardId(int id) {
+        CourseBoardEntity post = null;
+        try {
+            courseBoardRepository.modifyingHitsByCourseBoardId(id);
+            post = courseBoardRepository.findById(id).get();
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Course Board Post Load Success!", post);
+    }
+
+    public ResponseDTO<?> getQnaByCourseId(int id) {
+        List<CourseQnaDTO> courseQnaDTO = new ArrayList<CourseQnaDTO>();
+        List<CourseQuestionEntity> temp = new ArrayList<CourseQuestionEntity>();
+        try {
+            temp = courseQuestionRepository.findByCourseIdOrderByRegDateDesc(id);
+            temp.forEach(data -> {
+                CourseQnaDTO tempCourseQnaDTO = new CourseQnaDTO();
+                CourseAnswerEntity answer = null;
+                if(courseAnswerRepository.existsById(data.getCourseQuestionId())) {
+                    answer = courseAnswerRepository.findById(data.getCourseQuestionId()).get();
+                }
+                tempCourseQnaDTO.setQuestion(data);
+                tempCourseQnaDTO.setAnswer(answer);
+                courseQnaDTO.add(tempCourseQnaDTO);
+            });
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Qnas Load Success!", courseQnaDTO);
+    }
+
+    public ResponseDTO<?> getQnaByCourseQuestionId(int id) {
+        CourseQnaDTO courseQnaDTO = new CourseQnaDTO();
+        try {
+            CourseQuestionEntity question = courseQuestionRepository.findById(id).get();
+            CourseAnswerEntity answer = null;
+            if(courseAnswerRepository.existsById(id)) {
+                answer = courseAnswerRepository.findById(id).get();
+            }
+            courseQnaDTO.setQuestion(question);
+            courseQnaDTO.setAnswer(answer);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Qna Post Load Success!", courseQnaDTO);
+    }
+
+    public ResponseDTO<?> getQnaByStudentId(int id) {
+        List<CourseQnaDTO> courseQnaDTO = new ArrayList<CourseQnaDTO>();
+        List<CourseQuestionEntity> temp = new ArrayList<CourseQuestionEntity>();
+        try {
+            temp = courseQuestionRepository.findByStudentIdOrderByRegDateDesc(id);
+            temp.forEach(data -> {
+                CourseQnaDTO tempCourseQnaDTO = new CourseQnaDTO();
+                CourseAnswerEntity answer = null;
+                if(courseAnswerRepository.existsById(data.getCourseQuestionId())) {
+                    answer = courseAnswerRepository.findById(data.getCourseQuestionId()).get();
+                }
+                tempCourseQnaDTO.setQuestion(data);
+                tempCourseQnaDTO.setAnswer(answer);
+                courseQnaDTO.add(tempCourseQnaDTO);
+            });
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Qnas Load Success!", courseQnaDTO);
+    }
+
+    public ResponseDTO<?> getQnaByAcademicId(int id) {
+        List<CourseQnaDTO> courseQnaDTO = new ArrayList<CourseQnaDTO>();
+        List<CourseAnswerEntity> temp = new ArrayList<CourseAnswerEntity>();
+        try {
+            temp = courseAnswerRepository.findByAcademicIdOrderByAnswerRegDateDesc(id);
+            temp.forEach(data -> {
+                CourseQnaDTO tempCourseQnaDTO = new CourseQnaDTO();
+                CourseQuestionEntity question = courseQuestionRepository.findById(data.getCourseQuestionId()).get();
+                tempCourseQnaDTO.setQuestion(question);
+                tempCourseQnaDTO.setAnswer(data);
+                courseQnaDTO.add(tempCourseQnaDTO);
+            });
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Qnas Load Success!", courseQnaDTO);
     }
 }
