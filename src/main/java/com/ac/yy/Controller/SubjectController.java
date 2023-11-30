@@ -145,6 +145,13 @@ public class SubjectController {
         return result;
     }
 
+    // 작성자로 제출 과제 불러오기
+    @GetMapping("/submit/student/{id}")
+    public ResponseDTO<?> getSubmitsByStudentId(@PathVariable("id") int id) {
+        ResponseDTO<?> result = subjectService.getSubmitsByStudentId(id);
+        return result;
+    }
+
     // 과제의 모든 제출 확인
     @GetMapping("homework/{id}/submit")
     public ResponseDTO<?> getSubmitsByHomeworkId(@PathVariable("id") int id) {

@@ -410,4 +410,23 @@ public class SubjectService {
         }
         return ResponseDTO.setSuccess("Progress Load Success!", progressDTO);
     }
+
+    public ResponseDTO<?> getSubmitsByStudentId(int id) {
+        List<SubmitDTO> submitDTO = new ArrayList<SubmitDTO>();
+        List<SubmitEntity> temp = new ArrayList<SubmitEntity>();
+        try {
+            temp = submitRepository.findByStudentId(id);
+            temp.forEach(data -> {
+                SubmitDTO tempSubmitDTO = new SubmitDTO();
+                tempSubmitDTO.setSubmit(data);
+                if(feedbackRepository.existsById(data.getSubmitId())) {
+                    tempSubmitDTO.setFeedback(feedbackRepository.findById(data.getSubmitId()).get());
+                }
+                else tempSubmitDTO.setFeedback(null);
+            });
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Submits Load Success!", submitDTO);
+    }
 }
