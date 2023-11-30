@@ -15,4 +15,5 @@ public interface SubmitRepository extends JpaRepository<SubmitEntity, Integer> {
     public boolean existsByStudentIdAndHomeworkId(int studentId, int homeworkId);
     Optional<SubmitEntity> findByStudentIdAndHomeworkId(int studentId, int homeworkId);
     List<SubmitEntity> findByHomeworkId(int homeworkId);
+    List<SubmitEntity> findByStudentId(int studentId);
 }
