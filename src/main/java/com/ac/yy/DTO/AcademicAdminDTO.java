@@ -4,7 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.servlet.http.Part;
 import java.io.File;
+import java.util.Map;
 
 @Data
 @AllArgsConstructor
@@ -15,7 +17,7 @@ public class AcademicAdminDTO {
     private String userName;
     private String userBirth;
     private int userDept;
-    private File userPhoto;
+    private Part userPhoto;
     private String userPosition;
     private String userPhone;
     private String userAddr;

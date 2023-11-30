@@ -39,4 +39,9 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     @Modifying
     @Query(value = "UPDATE academics SET academics.available=?2 WHERE academics.uid=?1", nativeQuery = true)
     int modifyingAvailableByUid(int uid, int value);
+
+    @Transactional
+    @Modifying
+    @Query(value = "UPDATE users SET users.user_name=?2, users.user_birth=?3, users.user_addr=?4, users.user_phone=?5, users.user_email=?6 WHERE users.uid=?1", nativeQuery = true)
+    int modifyingInfoByUid(int uid, String name, String birth, String addr, String phone, String email);
 }

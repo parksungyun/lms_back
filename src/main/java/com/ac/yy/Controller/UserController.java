@@ -66,9 +66,9 @@ public class UserController {
         return result;
     }
 
-//    @PostMapping("/mod")
-//    public ResponseDTO<?> mod(@RequestBody AcademicAdminDTO dto) {
-//        ResponseDTO<?> result = userService.mod(dto);
-//        return result;
-//    }
+    @PostMapping("/mod")
+    public ResponseDTO<?> mod(@RequestBody AcademicAdminDTO dto) {
+        ResponseDTO<?> result = userService.mod(dto);
+        return result;
+    }
 }

@@ -19,10 +19,8 @@ public interface AcademicRepository extends JpaRepository<AcademicEntity, Intege
     Optional<AcademicEntity> findByUid(int uid);
     List<AcademicEntity> findByDept(int dept);
 
-    Optional<PositionEntity> findByPositionName(String userPosition);
-
     @Transactional
     @Modifying
-    @Query(value = "UPDATE academics SET academics.available=?7,academics.remark=?6,academics.photo=?5,academics.position=?4,academics.dept=?3,academics.auth=?2 WHERE academics.uid=?1", nativeQuery = true)
+    @Query(value = "UPDATE academics SET academics.available=?7,academics.remark=?6,academics.user_photo=?5,academics.position=?4,academics.dept=?3,academics.auth=?2 WHERE academics.uid=?1", nativeQuery = true)
     int modifyingInfoByUid(int uid, int userAuth, int userDept, int posotion, String userPhoto, String userRemark, int userAvailable);
 }
