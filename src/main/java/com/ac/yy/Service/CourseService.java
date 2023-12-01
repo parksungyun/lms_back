@@ -14,8 +14,9 @@ import org.springframework.stereotype.Service;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Service
 public class CourseService {
@@ -183,5 +184,34 @@ public class CourseService {
             return ResponseDTO.setFailed("Database Error");
         }
         return ResponseDTO.setSuccess("Qnas Load Success!", courseQnaDTO);
+    }
+    public ResponseDTO<?> getBoardBySearch(String keyword, int type, int id) {
+        List<CourseBoardEntity> posts = new ArrayList<CourseBoardEntity>();
+        List<CourseBoardEntity> courseBoardBySearch = new ArrayList<CourseBoardEntity>();
+        try {
+            List<CourseBoardEntity> courseBoardByCourseId = courseBoardRepository.findByCourseIdOrderByRegDateDesc(id);
+            // 제목으로 검색
+            if(type == 1 || type == 0) {
+                courseBoardBySearch = courseBoardRepository.findByTitleContainingOrderByRegDateDesc(keyword);
+                List<CourseBoardEntity> temp = courseBoardBySearch.stream().filter(o -> courseBoardByCourseId.stream().anyMatch(Predicate.isEqual(o))).collect(Collectors.toList());
+                posts.addAll(temp);
+            }
+            // 내용으로 검색
+            if(type == 2 || type == 0) {
+                courseBoardBySearch = courseBoardRepository.findByContentContainingOrderByRegDateDesc(keyword);
+                List<CourseBoardEntity> temp = courseBoardBySearch.stream().filter(o -> courseBoardByCourseId.stream().anyMatch(Predicate.isEqual(o))).collect(Collectors.toList());
+                posts.addAll(temp);
+            }
+            if(type == 0) {
+                Collections.sort(posts, (o1, o2) -> o2.getRegDate().compareTo(o1.getRegDate()));
+                Set<CourseBoardEntity> tempPosts = new HashSet<>(posts);
+                List<CourseBoardEntity> result = new ArrayList<>(tempPosts);
+                return ResponseDTO.setSuccess("Searched Course Board Search Success!", result);
+            }
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+
+        return ResponseDTO.setSuccess("Searched Course Board Search Success!", posts);
     }
 }

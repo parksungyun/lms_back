@@ -13,6 +13,9 @@ import java.util.List;
 public interface SubjectQuestionRepository  extends JpaRepository<SubjectQuestionEntity, Integer> {
     List<SubjectQuestionEntity> findBySubjectIdOrderByRegDateDesc(int subjectId);
     List<SubjectQuestionEntity> findByStudentIdOrderByRegDateDesc(int studentId);
+    List<SubjectQuestionEntity> findByTitleContainingOrderByRegDateDesc(String title);
+    List<SubjectQuestionEntity> findByContentContainingOrderByRegDateDesc(String content);
+    List<SubjectQuestionEntity> findByStudentIdContainingOrderByRegDateDesc(int studentId);
 
     @Transactional
     @Modifying

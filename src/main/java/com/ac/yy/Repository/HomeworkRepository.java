@@ -8,6 +8,6 @@ import java.util.List;
 
 @Repository
 public interface HomeworkRepository extends JpaRepository<HomeworkEntity, Integer> {
-    List<HomeworkEntity> findBySubjectIdOrderByRegDateDesc(int subjectId);
+    List<HomeworkEntity> findBySubjectIdOrderByStartDateDesc(int subjectId);
     List<HomeworkEntity> findByAcademicId(int academicId);
 }

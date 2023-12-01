@@ -14,6 +14,8 @@ public interface LectureRepository extends JpaRepository<LectureEntity, Integer>
     List<LectureEntity> findBySubjectIdOrderByRegDateDesc(int subjectId);
     List<LectureEntity> findBySubjectId(int subjectId);
     List<LectureEntity> findByAcademicId(int academicId);
+    List<LectureEntity> findByTitleContainingOrderByRegDateDesc(String title);
+    List<LectureEntity> findByContentContainingOrderByRegDateDesc(String content);
 
     @Transactional
     @Modifying

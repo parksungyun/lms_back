@@ -13,6 +13,8 @@ import java.util.List;
 public interface CourseBoardRepository extends JpaRepository<CourseBoardEntity, Integer> {
     List<CourseBoardEntity> findByCourseIdOrderByRegDateDesc(int courseId);
     List<CourseBoardEntity> findByAcademicId(int academicId);
+    List<CourseBoardEntity> findByTitleContainingOrderByRegDateDesc(String title);
+    List<CourseBoardEntity> findByContentContainingOrderByRegDateDesc(String content);
 
     @Transactional
     @Modifying

@@ -152,6 +152,13 @@ public class SubjectController {
         return result;
     }
 
+    // 과목과 작성자로 제출 과제 불러오기
+    @GetMapping("/submit/student/{studentId}/{subjectId}")
+    public ResponseDTO<?> getSubmitsByStudentId(@PathVariable("studentId") int studentId, @PathVariable("subjectId") int subjectId) {
+        ResponseDTO<?> result = subjectService.getSubmitsByStudentIdAndSubjectId(studentId, subjectId);
+        return result;
+    }
+
     // 과제의 모든 제출 확인
     @GetMapping("homework/{id}/submit")
     public ResponseDTO<?> getSubmitsByHomeworkId(@PathVariable("id") int id) {
@@ -184,6 +191,97 @@ public class SubjectController {
     @GetMapping("/progress/{studentId}")
     public ResponseDTO<?> getProgressByStudentId(@PathVariable("studentId") int studentId) {
         ResponseDTO<?> result = subjectService.getProgressByStudentId(studentId);
+        return result;
+    }
+
+    // 학생의 과목에 대한 모든 강의 학습 정보 불러오기
+    @GetMapping("/{subjectId}/study/{studentId}")
+    public ResponseDTO<?> getStudyByStudentIdAndSubjectId(@PathVariable("studentId") int studentId, @PathVariable("subjectId") int subjectId) {
+        ResponseDTO<?> result = subjectService.getStudyByStudentIdAndSubjectId(studentId, subjectId);
+        return result;
+    }
+
+    // 학생의 강의에 대한 강의 학습 정보 불러오기
+    @GetMapping("/study/{lectureId}/{studentId}")
+    public ResponseDTO<?> getStudyByStudentIdAndLectureId(@PathVariable("studentId") int studentId, @PathVariable("lectureId") int lectureId) {
+        ResponseDTO<?> result = subjectService.getStudyByStudentIdAndLectureId(studentId, lectureId);
+        return result;
+    }
+
+    // 학생으로 과정의 과목 정보 불러오기
+    @GetMapping("/student/{id}")
+    public ResponseDTO<?> getSubjectByStudentId(@PathVariable("id") int id) {
+        ResponseDTO<?> result = subjectService.getSubjectByStudentId(id);
+        return result;
+    }
+
+    // 과목 공지 검색(제목 + 내용)
+    @GetMapping("/{id}/board/search/all/{keyword}")
+    public ResponseDTO<?> getBoardBySearchAll(@PathVariable("keyword") String keyword, @PathVariable("id") int id) {
+        ResponseDTO<?> result = subjectService.getBoardBySearch(keyword, 0, id);
+        return result;
+    }
+
+    // 과목 공지 검색(제목)
+    @GetMapping("/{id}/board/search/title/{keyword}")
+    public ResponseDTO<?> getBoardBySearchTitle(@PathVariable("keyword") String keyword, @PathVariable("id") int id) {
+        ResponseDTO<?> result = subjectService.getBoardBySearch(keyword, 1, id);
+        return result;
+    }
+
+    // 과목 공지 검색(내용)
+    @GetMapping("/{id}/board/search/content/{keyword}")
+    public ResponseDTO<?> getBoardBySearchContent(@PathVariable("keyword") String keyword, @PathVariable("id") int id) {
+        ResponseDTO<?> result = subjectService.getBoardBySearch(keyword, 2, id);
+        return result;
+    }
+
+    // 강의 검색(제목 + 내용)
+    @GetMapping("/{id}/lecture/search/all/{keyword}")
+    public ResponseDTO<?> getLectureBySearchAll(@PathVariable("keyword") String keyword, @PathVariable("id") int id) {
+        ResponseDTO<?> result = subjectService.getLectureBySearch(keyword, 0, id);
+        return result;
+    }
+
+    // 강의 검색(제목)
+    @GetMapping("/{id}/lecture/search/title/{keyword}")
+    public ResponseDTO<?> getLectureBySearchTitle(@PathVariable("keyword") String keyword, @PathVariable("id") int id) {
+        ResponseDTO<?> result = subjectService.getLectureBySearch(keyword, 1, id);
+        return result;
+    }
+
+    // 강의 검색(내용)
+    @GetMapping("/{id}/lecture/search/content/{keyword}")
+    public ResponseDTO<?> getLectureBySearchContent(@PathVariable("keyword") String keyword, @PathVariable("id") int id) {
+        ResponseDTO<?> result = subjectService.getLectureBySearch(keyword, 2, id);
+        return result;
+    }
+
+    // 과목 QnA 검색 (제목 + 내용 + 작성자)
+    @GetMapping("/{id}/qna/search/all/{keyword}")
+    public ResponseDTO<?> getQnaBySearchAll(@PathVariable("keyword") String keyword, @PathVariable("id") int id) {
+        ResponseDTO<?> result = subjectService.getQnaBySearch(keyword, 0, id);
+        return result;
+    }
+
+    // 과목 QnA 검색(제목)
+    @GetMapping("/{id}/qna/search/title/{keyword}")
+    public ResponseDTO<?> getQnaBySearchTitle(@PathVariable("keyword") String keyword, @PathVariable("id") int id) {
+        ResponseDTO<?> result = subjectService.getQnaBySearch(keyword, 1, id);
+        return result;
+    }
+
+    // 과목 QnA 검색(내용)
+    @GetMapping("/{id}/qna/search/content/{keyword}")
+    public ResponseDTO<?> getQnaBySearchContent(@PathVariable("keyword") String keyword, @PathVariable("id") int id) {
+        ResponseDTO<?> result = subjectService.getQnaBySearch(keyword, 2, id);
+        return result;
+    }
+
+    // 과목 QnA 검색(내용)
+    @GetMapping("/{id}/qna/search/writer/{keyword}")
+    public ResponseDTO<?> getQnaBySearchWriter(@PathVariable("keyword") String keyword, @PathVariable("id") int id) {
+        ResponseDTO<?> result = subjectService.getQnaBySearch(keyword, 3, id);
         return result;
     }
 }
