@@ -5,6 +5,7 @@ import com.ac.yy.DTO.ResponseDTO;
 import com.ac.yy.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping(value = "/api/user")

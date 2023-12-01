@@ -9,24 +9,11 @@ import com.ac.yy.Entity.PositionEntity;
 import com.ac.yy.Entity.StudentEntity;
 import com.ac.yy.Entity.UserEntity;
 import com.ac.yy.Repository.*;
-import org.apache.tomcat.util.http.fileupload.FileUpload;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
-import org.springframework.util.FileCopyUtils;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.nio.file.Files;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class UserService {
@@ -185,30 +172,14 @@ public class UserService {
 
     public ResponseDTO<?> mod(AcademicAdminDTO dto) {
             int position;
-            String fileName;
-            String extension = dto.getUserPhoto().getName().split(".")[-1];
-        fileName = UUID.randomUUID().toString().concat("." + extension);
-        String savePath = System.getProperty("user.dir") + "\\images";
-        if (!new File(savePath).exists()) {
-            try{
-                new File(savePath).mkdir();
-            }
-            catch(Exception e){
-                e.getStackTrace();
-            }
-        }
-
-        String filePath = savePath + "\\" + fileName;
-
         try {
             position = positionRepository.findByPositionName(dto.getUserPosition()).get().getPositionId();
-            academicRepository.modifyingInfoByUid(dto.getUid(), dto.getUserAuth(), dto.getUserDept(), position, filePath, dto.getUserRemark(), dto.getUserAvailable());
+            academicRepository.modifyingInfoByUid(dto.getUid(), dto.getUserAuth(), dto.getUserDept(), position, dto.getUserRemark(), dto.getUserAvailable());
             userRepository.modifyingInfoByUid(dto.getUid(), dto.getUserName(), dto.getUserBirth(), dto.getUserAddr(), dto.getUserPhone(), dto.getUserEmail());
         }
         catch (Exception e) {
             return ResponseDTO.setFailed("Database Error");
         }
-        System.out.println(dto.getUserPhoto());
-        return ResponseDTO.setSuccess("Mod Success!", dto.getUserPhoto());
+        return ResponseDTO.setSuccess("Mod Success!", null);
     }
 }

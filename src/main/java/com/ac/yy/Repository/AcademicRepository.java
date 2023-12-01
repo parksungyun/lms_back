@@ -21,6 +21,11 @@ public interface AcademicRepository extends JpaRepository<AcademicEntity, Intege
 
     @Transactional
     @Modifying
-    @Query(value = "UPDATE academics SET academics.available=?7,academics.remark=?6,academics.user_photo=?5,academics.position=?4,academics.dept=?3,academics.auth=?2 WHERE academics.uid=?1", nativeQuery = true)
-    int modifyingInfoByUid(int uid, int userAuth, int userDept, int posotion, String userPhoto, String userRemark, int userAvailable);
+    @Query(value = "UPDATE academics SET academics.available=?6,academics.remark=?5,academics.position=?4,academics.dept=?3,academics.auth=?2 WHERE academics.uid=?1", nativeQuery = true)
+    int modifyingInfoByUid(int uid, int userAuth, int userDept, int posotion, String userRemark, int userAvailable);
+
+    @Transactional
+    @Modifying
+    @Query(value = "UPDATE academics SET academics.user_photo=?2 WHERE academics.uid=?1", nativeQuery = true)
+    int modifyingPhotoByUid(int id, String filepath);
 }
