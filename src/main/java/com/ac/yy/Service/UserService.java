@@ -79,6 +79,26 @@ public class UserService {
         return ResponseDTO.setSuccess("Students Load Success!", students);
     }
 
+    public ResponseDTO<?> getStudentsBySubjectId(int id) {
+        List<StudentDTO> students = new ArrayList<StudentDTO>();
+        List<StudentEntity> temp = new ArrayList<StudentEntity>();
+
+        try {
+            int courseId = subjectRepository.findById(id).get().getCourseId();
+            temp = studentRepository.findByCourseId(courseId);
+            temp.forEach(data -> {
+                StudentDTO tempStudentDTO = new StudentDTO();
+                tempStudentDTO.setStudent(data);
+                tempStudentDTO.setUser(userRepository.findByUid(data.getUid()).get());
+                students.add(tempStudentDTO);
+            });
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+
+        return ResponseDTO.setSuccess("Students Load Success!", students);
+    }
+
     public ResponseDTO<?> getAcademicsByDept(int dept) {
         List<AcademicDTO> academics = new ArrayList<AcademicDTO>();
         List<AcademicEntity> temp = new ArrayList<AcademicEntity>();
