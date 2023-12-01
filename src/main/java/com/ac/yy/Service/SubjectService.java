@@ -3,13 +3,14 @@ package com.ac.yy.Service;
 import com.ac.yy.DTO.*;
 import com.ac.yy.Entity.*;
 import com.ac.yy.Repository.*;
+import javafx.scene.effect.SepiaTone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Service
 public class SubjectService {
@@ -24,6 +25,7 @@ public class SubjectService {
     @Autowired SubjectQuestionRepository subjectQuestionRepository;
     @Autowired SubjectAnswerRepository subjectAnswerRepository;
     @Autowired StudentRepository studentRepository;
+    @Autowired UserRepository userRepository;
     public ResponseDTO<?> getSubjectById(int id) {
         SubjectDTO subject = new SubjectDTO();
         SubjectEntity subjectTemp = null;
@@ -110,7 +112,7 @@ public class SubjectService {
     public ResponseDTO<?> getHomeworksBySubjectId(int id) {
         List<HomeworkEntity> homeworks = new ArrayList<HomeworkEntity>();
         try {
-            homeworks = homeworkRepository.findBySubjectIdOrderByRegDateDesc(id);
+            homeworks = homeworkRepository.findBySubjectIdOrderByStartDateDesc(id);
         } catch (Exception e) {
             return ResponseDTO.setFailed("Database Error");
         }
@@ -251,7 +253,7 @@ public class SubjectService {
         try {
             subjects = subjectRepository.findByCourseId(id);
             subjects.forEach(data -> {
-                homeworks.addAll(homeworkRepository.findBySubjectIdOrderByRegDateDesc(data.getSubjectId()));
+                homeworks.addAll(homeworkRepository.findBySubjectIdOrderByStartDateDesc(data.getSubjectId()));
             });
             Collections.sort(homeworks, (o1, o2) -> o2.getRegDate().compareTo(o1.getRegDate()));
         } catch (Exception e) {
@@ -428,5 +430,216 @@ public class SubjectService {
             return ResponseDTO.setFailed("Database Error");
         }
         return ResponseDTO.setSuccess("Submits Load Success!", submitDTO);
+    }
+
+    public ResponseDTO<?> getStudyByStudentIdAndSubjectId(int studentId, int subjectId) {
+        List<StudyEntity> studyEntityList = new ArrayList<StudyEntity>();
+        try {
+            List<LectureEntity> lectures = lectureRepository.findBySubjectId(subjectId);
+            lectures.forEach(data -> {
+                if(studyRepository.existsByStudentIdAndLectureId(studentId, data.getLectureId())) {
+                    studyEntityList.add(studyRepository.findByStudentIdAndLectureId(studentId, data.getLectureId()).get());
+                }
+            });
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Study Load Success!", studyEntityList);
+    }
+
+    public ResponseDTO<?> getStudyByStudentIdAndLectureId(int studentId, int lectureId) {
+        StudyEntity studyEntity = new StudyEntity();
+        try {
+            if(studyRepository.existsByStudentIdAndLectureId(studentId, lectureId)) {
+                studyEntity = studyRepository.findByStudentIdAndLectureId(studentId, lectureId).get();
+            }
+            else studyEntity = null;
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Study Load Success!", studyEntity);
+    }
+
+    public ResponseDTO<?> getSubmitsByStudentIdAndSubjectId(int studentId, int subjectId) {
+        List<SubmitDTO> submitDTO = new ArrayList<SubmitDTO>();
+        List<SubmitEntity> temp = new ArrayList<SubmitEntity>();
+        try {
+            List<HomeworkEntity> homeworks = homeworkRepository.findBySubjectIdOrderByStartDateDesc(subjectId);
+            homeworks.forEach(data -> {
+                if(submitRepository.existsByStudentIdAndHomeworkId(studentId, data.getHomeworkId())) {
+                    temp.add(submitRepository.findByStudentIdAndHomeworkId(studentId, data.getHomeworkId()).get());
+                }
+            });
+            temp.forEach(data -> {
+                SubmitDTO tempSubmitDTO = new SubmitDTO();
+                tempSubmitDTO.setSubmit(data);
+                if(feedbackRepository.existsById(data.getSubmitId())) {
+                    tempSubmitDTO.setFeedback(feedbackRepository.findById(data.getSubmitId()).get());
+                }
+                else {
+                    tempSubmitDTO.setFeedback(null);
+                }
+                submitDTO.add(tempSubmitDTO);
+            });
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Submits Load Success!", submitDTO);
+    }
+
+    public ResponseDTO<?> getSubjectByStudentId(int id) {
+        List<SubjectDTO> subjects = new ArrayList<SubjectDTO>();
+        List<SubjectEntity> temp = new ArrayList<SubjectEntity>();
+        try {
+            int courseId = studentRepository.findByStudentId(id).get().getCourseId();
+            temp = subjectRepository.findByCourseId(courseId);
+            temp.forEach(data -> {
+                SubjectDTO tempSubjectDTO = new SubjectDTO();
+                tempSubjectDTO.setSubject(data);
+                tempSubjectDTO.setCourse(courseRepository.findById(courseId).get());
+                subjects.add(tempSubjectDTO);
+            });
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Subjects Load Success!", subjects);
+    }
+
+    public ResponseDTO<?> getBoardBySearch(String keyword, int type, int id) {
+        List<SubjectBoardEntity> posts = new ArrayList<SubjectBoardEntity>();
+        List<SubjectBoardEntity> subjectBoardBySearch = new ArrayList<SubjectBoardEntity>();
+        try {
+            List<SubjectBoardEntity> subjectBoardBySubjectId = subjectBoardRepository.findBySubjectIdOrderByRegDateDesc(id);
+            // 제목으로 검색
+            if(type == 1 || type == 0) {
+                subjectBoardBySearch = subjectBoardRepository.findByTitleContainingOrderByRegDateDesc(keyword);
+                List<SubjectBoardEntity> temp = subjectBoardBySearch.stream().filter(o -> subjectBoardBySubjectId.stream().anyMatch(Predicate.isEqual(o))).collect(Collectors.toList());
+                posts.addAll(temp);
+            }
+            // 내용으로 검색
+            if(type == 2 || type == 0) {
+                subjectBoardBySearch = subjectBoardRepository.findByContentContainingOrderByRegDateDesc(keyword);
+                List<SubjectBoardEntity> temp = subjectBoardBySearch.stream().filter(o -> subjectBoardBySubjectId.stream().anyMatch(Predicate.isEqual(o))).collect(Collectors.toList());
+                posts.addAll(temp);
+            }
+            if(type == 0) {
+                Collections.sort(posts, (o1, o2) -> o2.getRegDate().compareTo(o1.getRegDate()));
+                Set<SubjectBoardEntity> tempPosts = new HashSet<>(posts);
+                List<SubjectBoardEntity> result = new ArrayList<>(tempPosts);
+                return ResponseDTO.setSuccess("Searched Subject Board Search Success!", result);
+            }
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+
+        return ResponseDTO.setSuccess("Searched Subject Board Search Success!", posts);
+    }
+
+    public ResponseDTO<?> getLectureBySearch(String keyword, int type, int id) {
+        List<LectureEntity> posts = new ArrayList<LectureEntity>();
+        List<LectureEntity> lectureBySearch = new ArrayList<LectureEntity>();
+        try {
+            List<LectureEntity> lectureBySubjectId = lectureRepository.findBySubjectId(id);
+            // 제목으로 검색
+            if(type == 1 || type == 0) {
+                lectureBySearch = lectureRepository.findByTitleContainingOrderByRegDateDesc(keyword);
+                List<LectureEntity> temp = lectureBySearch.stream().filter(o -> lectureBySubjectId.stream().anyMatch(Predicate.isEqual(o))).collect(Collectors.toList());
+                posts.addAll(temp);
+            }
+            // 내용으로 검색
+            if(type == 2 || type == 0) {
+                lectureBySearch = lectureRepository.findByContentContainingOrderByRegDateDesc(keyword);
+                List<LectureEntity> temp = lectureBySearch.stream().filter(o -> lectureBySubjectId.stream().anyMatch(Predicate.isEqual(o))).collect(Collectors.toList());
+                posts.addAll(temp);
+            }
+            if(type == 0) {
+                Collections.sort(posts, (o1, o2) -> o2.getRegDate().compareTo(o1.getRegDate()));
+                Set<LectureEntity> tempPosts = new HashSet<>(posts);
+                List<LectureEntity> result = new ArrayList<>(tempPosts);
+                return ResponseDTO.setSuccess("Searched Lecture Search Success!", result);
+            }
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+
+        return ResponseDTO.setSuccess("Searched Lecture Search Success!", posts);
+    }
+
+    public ResponseDTO<?> getQnaBySearch(String keyword, int type, int id) {
+        List<SubjectQnaDTO> posts = new ArrayList<SubjectQnaDTO>();
+        List<SubjectQuestionEntity> subjectQuestionBySearch = new ArrayList<SubjectQuestionEntity>();
+        try {
+            List<SubjectQuestionEntity> subjectQuestionBySubjectId = subjectQuestionRepository.findBySubjectIdOrderByRegDateDesc(id);
+            // 제목으로 검색
+            if(type == 1 || type == 0) {
+                subjectQuestionBySearch = subjectQuestionRepository.findByTitleContainingOrderByRegDateDesc(keyword);
+                List<SubjectQuestionEntity> temp = subjectQuestionBySearch.stream().filter(o -> subjectQuestionBySubjectId.stream().anyMatch(Predicate.isEqual(o))).collect(Collectors.toList());
+                temp.forEach(data -> {
+                    SubjectQnaDTO tempSubjectQnaDTO = new SubjectQnaDTO();
+                    tempSubjectQnaDTO.setQuestion(data);
+                    if(subjectAnswerRepository.existsById(data.getSubjectQuestionId())) {
+                        tempSubjectQnaDTO.setAnswer(subjectAnswerRepository.findById(data.getSubjectQuestionId()).get());
+                    }
+                    else tempSubjectQnaDTO.setAnswer(null);
+                    posts.add(tempSubjectQnaDTO);
+                });
+            }
+            // 내용으로 검색
+            if(type == 2 || type == 0) {
+                subjectQuestionBySearch = subjectQuestionRepository.findByContentContainingOrderByRegDateDesc(keyword);
+                List<SubjectQuestionEntity> temp = subjectQuestionBySearch.stream().filter(o -> subjectQuestionBySubjectId.stream().anyMatch(Predicate.isEqual(o))).collect(Collectors.toList());
+                temp.forEach(data -> {
+                    SubjectQnaDTO tempSubjectQnaDTO = new SubjectQnaDTO();
+                    tempSubjectQnaDTO.setQuestion(data);
+                    if(subjectAnswerRepository.existsById(data.getSubjectQuestionId())) {
+                        tempSubjectQnaDTO.setAnswer(subjectAnswerRepository.findById(data.getSubjectQuestionId()).get());
+                    }
+                    else tempSubjectQnaDTO.setAnswer(null);
+                    posts.add(tempSubjectQnaDTO);
+                });
+            }
+            // 작성자로 검색
+            if(type == 3 || type == 0) {
+                List<UserEntity> tempUser = userRepository.findByUserNameContainingOrderByUserName(keyword);
+                List<StudentDTO> tempStudent = new ArrayList<StudentDTO>();
+                if(!tempUser.isEmpty()) {
+                    tempUser.forEach(data -> {
+                        StudentDTO tempStudentDTO = new StudentDTO();
+                        if(studentRepository.existsByUid(data.getUid())) {
+                            tempStudentDTO.setUser(data);
+                            tempStudentDTO.setStudent(studentRepository.findByUid(data.getUid()).get());
+                            tempStudent.add(tempStudentDTO);
+                        }
+                    });
+                }
+                if(!tempStudent.isEmpty()) {
+                    tempStudent.forEach(data -> {
+                        SubjectQnaDTO tempSubjectQnaDTO = new SubjectQnaDTO();
+                        List<SubjectQuestionEntity> tempQuestion = new ArrayList<SubjectQuestionEntity>();
+                        tempQuestion = subjectQuestionRepository.findByStudentIdContainingOrderByRegDateDesc(data.getStudent().getStudentId());
+
+                        List<SubjectQuestionEntity> temp = tempQuestion.stream().filter(o -> subjectQuestionBySubjectId.stream().anyMatch(Predicate.isEqual(o))).collect(Collectors.toList());
+                        temp.forEach(ques -> {
+                            tempSubjectQnaDTO.setQuestion(ques);
+                            if(subjectAnswerRepository.existsById(ques.getSubjectQuestionId())) {
+                                tempSubjectQnaDTO.setAnswer(subjectAnswerRepository.findById(ques.getSubjectQuestionId()).get());
+                            }
+                            else tempSubjectQnaDTO.setAnswer(null);
+                            posts.add(tempSubjectQnaDTO);
+                        });
+                    });
+                }
+            }
+            if(type == 0) {
+                Collections.sort(posts, (o1, o2) -> o2.getQuestion().getRegDate().compareTo(o1.getQuestion().getRegDate()));
+                Set<SubjectQnaDTO> tempPosts = new HashSet<>(posts);
+                List<SubjectQnaDTO> result = new ArrayList<>(tempPosts);
+                return ResponseDTO.setSuccess("Searched Subject QnA Search Success!", result);
+            }
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+
+        return ResponseDTO.setSuccess("Searched Subject QnA Search Success!", posts);
     }
 }

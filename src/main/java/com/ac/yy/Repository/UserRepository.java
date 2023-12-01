@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
 import java.beans.Transient;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -19,11 +20,10 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 
     public boolean existsByUserNameAndUserPhone(String userName, String userPhone);
     Optional<UserEntity> findByUserNameAndUserPhone(String userName, String userPhone);
-
     public boolean existsByUserIdAndUserPhone(String userId, String userPhone);
     Optional<UserEntity> findByUserIdAndUserPhone(String userId, String userPhone);
-
     public boolean existsByUserId(String userId);
+    List<UserEntity> findByUserNameContainingOrderByUserName(String userName);
 
     @Transactional
     @Modifying

@@ -4,14 +4,13 @@ import com.ac.yy.DTO.AdmissionPostDTO;
 import com.ac.yy.DTO.AdmissionWriteDTO;
 import com.ac.yy.DTO.ResponseDTO;
 import com.ac.yy.Entity.AdmissionQuestionEntity;
+import com.ac.yy.Entity.CourseBoardEntity;
 import com.ac.yy.Repository.AdmissionAnswerRepository;
 import com.ac.yy.Repository.AdmissionQuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class AdmissionService {
@@ -97,12 +96,15 @@ public class AdmissionService {
             }
             if(type == 0) {
                 Collections.sort(posts, (o1, o2) -> o2.getQuestion().getRegDate().compareTo(o1.getQuestion().getRegDate()));
+                Set<AdmissionPostDTO> tempPosts = new HashSet<>(posts);
+                List<AdmissionPostDTO> result = new ArrayList<>(tempPosts);
+                return ResponseDTO.setSuccess("Searched Admission Questions Search Success!", result);
             }
         } catch (Exception e) {
             return ResponseDTO.setFailed("Database Error");
         }
 
-        return ResponseDTO.setSuccess("Admission Questions Search Success!", posts);
+        return ResponseDTO.setSuccess("Searched Admission Questions Search Success!", posts);
     }
 
     public ResponseDTO<?> writeAdmissionQuestion(AdmissionWriteDTO dto) {

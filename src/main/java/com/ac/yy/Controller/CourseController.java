@@ -90,4 +90,25 @@ public class CourseController {
         ResponseDTO<?> result = courseService.getQnaByAcademicId(id);
         return result;
     }
+
+    // 과목 공지 검색(제목 + 내용)
+    @GetMapping("/{id}/board/search/all/{keyword}")
+    public ResponseDTO<?> getBoardBySearchAll(@PathVariable("keyword") String keyword, @PathVariable("id") int id) {
+        ResponseDTO<?> result = courseService.getBoardBySearch(keyword, 0, id);
+        return result;
+    }
+
+    // 과목 공지 검색(제목)
+    @GetMapping("/{id}/board/search/title/{keyword}")
+    public ResponseDTO<?> getBoardBySearchTitle(@PathVariable("keyword") String keyword, @PathVariable("id") int id) {
+        ResponseDTO<?> result = courseService.getBoardBySearch(keyword, 1, id);
+        return result;
+    }
+
+    // 과목 공지 검색(내용)
+    @GetMapping("/{id}/board/search/content/{keyword}")
+    public ResponseDTO<?> getBoardBySearchContent(@PathVariable("keyword") String keyword, @PathVariable("id") int id) {
+        ResponseDTO<?> result = courseService.getBoardBySearch(keyword, 2, id);
+        return result;
+    }
 }
