@@ -13,6 +13,8 @@ import java.util.List;
 public interface SubjectBoardRepository extends JpaRepository<SubjectBoardEntity, Integer> {
     List<SubjectBoardEntity> findBySubjectIdOrderByRegDateDesc(int subjectId);
     List<SubjectBoardEntity> findByAcademicId(int academicId);
+    List<SubjectBoardEntity> findByTitleContainingOrderByRegDateDesc(String title);
+    List<SubjectBoardEntity> findByContentContainingOrderByRegDateDesc(String content);
 
     @Transactional
     @Modifying
