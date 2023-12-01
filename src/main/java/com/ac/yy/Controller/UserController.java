@@ -24,6 +24,13 @@ public class UserController {
         return result;
     }
 
+    // 과목으로 과정에 속한 학생 정보 불러오기
+    @GetMapping("/students/subject/{id}")
+    public ResponseDTO<?> getStudentsBySubjectId(@PathVariable("id") int id) {
+        ResponseDTO<?> result = userService.getStudentsBySubjectId(id);
+        return result;
+    }
+
     // 모든 강사 정보 불러오기
     @GetMapping("/trainers")
     public ResponseDTO<?> getAllTrainers() {
