@@ -1,5 +1,7 @@
 package com.ac.yy.Entity;
 
+import com.ac.yy.DTO.AcademicAdminDTO;
+import com.ac.yy.DTO.SubmitWriteDTO;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -47,4 +49,12 @@ public class AcademicEntity {
     @Column(name = "mod_date")
     @UpdateTimestamp
     private LocalDateTime modDate;
+
+    public AcademicEntity(AcademicAdminDTO dto) {
+        this.uid = dto.getUid();
+        this.auth = dto.getUserAuth();
+        this.dept = dto.getUserDept();
+        this.remark = dto.getUserRemark();
+        this.available = dto.getUserAvailable();
+    }
 }

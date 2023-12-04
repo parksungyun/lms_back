@@ -74,9 +74,16 @@ public class UserController {
         return result;
     }
 
+    //admin이 academic 강사, 매니저 정보 수정
     @PostMapping("/mod")
     public ResponseDTO<?> mod(@RequestBody AcademicAdminDTO dto) {
         ResponseDTO<?> result = userService.mod(dto);
+        return result;
+    }
+
+    @PostMapping("/add")
+    public ResponseDTO<?> add(@RequestBody AcademicAdminDTO dto) {
+        ResponseDTO<?> result = userService.add(dto);
         return result;
     }
 }
