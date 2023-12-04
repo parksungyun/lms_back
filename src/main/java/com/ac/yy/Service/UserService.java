@@ -202,4 +202,18 @@ public class UserService {
         }
         return ResponseDTO.setSuccess("Mod Success!", null);
     }
+
+    public ResponseDTO<?> add(AcademicAdminDTO dto) {
+        try {
+            int position = positionRepository.findByPositionName(dto.getUserPosition()).get().getPositionId();
+            AcademicEntity academic = new AcademicEntity(dto);
+            academic.setPosition(position);
+            academicRepository.save(academic);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Add Success!", dto);
+    }
 }
