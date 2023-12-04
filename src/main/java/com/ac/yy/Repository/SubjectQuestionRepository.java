@@ -15,7 +15,6 @@ public interface SubjectQuestionRepository  extends JpaRepository<SubjectQuestio
     List<SubjectQuestionEntity> findByStudentIdOrderByRegDateDesc(int studentId);
     List<SubjectQuestionEntity> findByTitleContainingOrderByRegDateDesc(String title);
     List<SubjectQuestionEntity> findByContentContainingOrderByRegDateDesc(String content);
-    List<SubjectQuestionEntity> findByStudentIdContainingOrderByRegDateDesc(int studentId);
 
     @Transactional
     @Modifying

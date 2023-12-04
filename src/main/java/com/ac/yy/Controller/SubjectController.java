@@ -1,9 +1,6 @@
 package com.ac.yy.Controller;
 
-import com.ac.yy.DTO.FeedbackWriteDTO;
-import com.ac.yy.DTO.ResponseDTO;
-import com.ac.yy.DTO.StudyDTO;
-import com.ac.yy.DTO.SubmitWriteDTO;
+import com.ac.yy.DTO.*;
 import com.ac.yy.Service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -152,6 +149,13 @@ public class SubjectController {
         return result;
     }
 
+    // 학생Id와 과제Id로 제출 과제 불러오기
+    @GetMapping("/submit/student/{studentId}/homework/{homeworkId}")
+    public ResponseDTO<?> getSubmitByStudentIdAndHomeworkId(@PathVariable("studentId") int studentId, @PathVariable("homeworkId") int homeworkId) {
+        ResponseDTO<?> result = subjectService.getSubmitByStudentIdAndHomeworkId(studentId, homeworkId);
+        return result;
+    }
+
     // 과목과 작성자로 제출 과제 불러오기
     @GetMapping("/submit/student/{studentId}/{subjectId}")
     public ResponseDTO<?> getSubmitsByStudentId(@PathVariable("studentId") int studentId, @PathVariable("subjectId") int subjectId) {
@@ -278,10 +282,24 @@ public class SubjectController {
         return result;
     }
 
-    // 과목 QnA 검색(내용)
+    // 과목 QnA 검색(작성자)
     @GetMapping("/{id}/qna/search/writer/{keyword}")
     public ResponseDTO<?> getQnaBySearchWriter(@PathVariable("keyword") String keyword, @PathVariable("id") int id) {
         ResponseDTO<?> result = subjectService.getQnaBySearch(keyword, 3, id);
+        return result;
+    }
+
+    // 과목 QnA 작성
+    @PostMapping("/qna/write")
+    public ResponseDTO<?> writeSubjectQuestion(@RequestBody SubjectQuestionWriteDTO dto) {
+        ResponseDTO<?> result = subjectService.writeSubjectQuestion(dto);
+        return result;
+    }
+
+    // 과목 QnA 수정
+    @PostMapping("/qna/{id}/mod")
+    public ResponseDTO<?> writeSubjectQuestion(@PathVariable("id") int id, @RequestBody SubjectQuestionWriteDTO dto) {
+        ResponseDTO<?> result = subjectService.writeSubjectQuestion(id, dto);
         return result;
     }
 }

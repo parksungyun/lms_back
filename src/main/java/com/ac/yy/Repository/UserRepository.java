@@ -23,7 +23,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     public boolean existsByUserIdAndUserPhone(String userId, String userPhone);
     Optional<UserEntity> findByUserIdAndUserPhone(String userId, String userPhone);
     public boolean existsByUserId(String userId);
-    List<UserEntity> findByUserNameContainingOrderByUserName(String userName);
+    List<UserEntity> findByUserNameContaining(String userName);
 
     @Transactional
     @Modifying
