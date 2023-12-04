@@ -1,14 +1,13 @@
 package com.ac.yy.Controller;
 
+import com.ac.yy.DTO.CourseQuestionWriteDTO;
 import com.ac.yy.DTO.ResponseDTO;
+import com.ac.yy.DTO.SubjectQuestionWriteDTO;
 import com.ac.yy.Entity.CourseEntity;
 import com.ac.yy.Service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.parameters.P;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/api/course")
@@ -109,6 +108,20 @@ public class CourseController {
     @GetMapping("/{id}/board/search/content/{keyword}")
     public ResponseDTO<?> getBoardBySearchContent(@PathVariable("keyword") String keyword, @PathVariable("id") int id) {
         ResponseDTO<?> result = courseService.getBoardBySearch(keyword, 2, id);
+        return result;
+    }
+
+    // 과정 QnA 작성
+    @PostMapping("/qna/write")
+    public ResponseDTO<?> writeCourseQuestion(@RequestBody CourseQuestionWriteDTO dto) {
+        ResponseDTO<?> result = courseService.writeCourseQuestion(dto);
+        return result;
+    }
+
+    // 과정 QnA 수정
+    @PostMapping("/qna/{id}/mod")
+    public ResponseDTO<?> writeCourseQuestion(@PathVariable("id") int id, @RequestBody CourseQuestionWriteDTO dto) {
+        ResponseDTO<?> result = courseService.writeCourseQuestion(id, dto);
         return result;
     }
 }

@@ -1,13 +1,11 @@
 package com.ac.yy.Service;
 
 import com.ac.yy.DTO.CourseQnaDTO;
+import com.ac.yy.DTO.CourseQuestionWriteDTO;
 import com.ac.yy.DTO.ResponseDTO;
 import com.ac.yy.DTO.SubjectQnaDTO;
 import com.ac.yy.Entity.*;
-import com.ac.yy.Repository.CourseAnswerRepository;
-import com.ac.yy.Repository.CourseBoardRepository;
-import com.ac.yy.Repository.CourseQuestionRepository;
-import com.ac.yy.Repository.CourseRepository;
+import com.ac.yy.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +22,7 @@ public class CourseService {
     @Autowired CourseBoardRepository courseBoardRepository;
     @Autowired CourseQuestionRepository courseQuestionRepository;
     @Autowired CourseAnswerRepository courseAnswerRepository;
+    @Autowired StudentRepository studentRepository;
     public ResponseDTO<?> getCourseById(int id) {
         CourseEntity course = null;
 
@@ -213,5 +212,28 @@ public class CourseService {
         }
 
         return ResponseDTO.setSuccess("Searched Course Board Search Success!", posts);
+    }
+
+    public ResponseDTO<?> writeCourseQuestion(CourseQuestionWriteDTO dto) {
+        CourseQuestionEntity courseQuestionEntity = new CourseQuestionEntity(dto);
+        try {
+            courseQuestionEntity.setCourseId(studentRepository.findByStudentId(dto.getStudentId()).get().getCourseId());
+            courseQuestionRepository.save(courseQuestionEntity);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Write Course Question Success!", null);
+    }
+
+    public ResponseDTO<?> writeCourseQuestion(int id, CourseQuestionWriteDTO dto) {
+        try {
+            CourseQuestionEntity courseQuestionEntity = courseQuestionRepository.findById(id).get();
+            courseQuestionEntity.setTitle(dto.getTitle());
+            courseQuestionEntity.setContent(dto.getContent());
+            courseQuestionRepository.save(courseQuestionEntity);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Write Course Question Success!", null);
     }
 }

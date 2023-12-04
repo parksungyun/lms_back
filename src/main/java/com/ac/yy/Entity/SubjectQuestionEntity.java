@@ -1,5 +1,6 @@
 package com.ac.yy.Entity;
 
+import com.ac.yy.DTO.SubjectQuestionWriteDTO;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -46,4 +47,11 @@ public class SubjectQuestionEntity {
     @Column(name = "mod_date")
     @UpdateTimestamp
     private LocalDateTime modDate;
+
+    public SubjectQuestionEntity(SubjectQuestionWriteDTO dto) {
+        this.subjectId = dto.getSubjectId();
+        this.studentId = dto.getStudentId();
+        this.title = dto.getTitle();
+        this.content = dto.getContent();
+    }
 }

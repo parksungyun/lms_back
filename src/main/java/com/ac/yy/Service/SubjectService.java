@@ -600,7 +600,7 @@ public class SubjectService {
             }
             // 작성자로 검색
             if(type == 3 || type == 0) {
-                List<UserEntity> tempUser = userRepository.findByUserNameContainingOrderByUserName(keyword);
+                List<UserEntity> tempUser = userRepository.findByUserNameContaining(keyword);
                 List<StudentDTO> tempStudent = new ArrayList<StudentDTO>();
                 if(!tempUser.isEmpty()) {
                     tempUser.forEach(data -> {
@@ -616,7 +616,7 @@ public class SubjectService {
                     tempStudent.forEach(data -> {
                         SubjectQnaDTO tempSubjectQnaDTO = new SubjectQnaDTO();
                         List<SubjectQuestionEntity> tempQuestion = new ArrayList<SubjectQuestionEntity>();
-                        tempQuestion = subjectQuestionRepository.findByStudentIdContainingOrderByRegDateDesc(data.getStudent().getStudentId());
+                        tempQuestion = subjectQuestionRepository.findByStudentIdOrderByRegDateDesc(data.getStudent().getStudentId());
 
                         List<SubjectQuestionEntity> temp = tempQuestion.stream().filter(o -> subjectQuestionBySubjectId.stream().anyMatch(Predicate.isEqual(o))).collect(Collectors.toList());
                         temp.forEach(ques -> {
@@ -641,5 +641,49 @@ public class SubjectService {
         }
 
         return ResponseDTO.setSuccess("Searched Subject QnA Search Success!", posts);
+    }
+
+    public ResponseDTO<?> writeSubjectQuestion(SubjectQuestionWriteDTO dto) {
+        SubjectQuestionEntity subjectQuestionEntity = new SubjectQuestionEntity(dto);
+        try {
+            subjectQuestionRepository.save(subjectQuestionEntity);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Write Subject Question Success!", null);
+    }
+
+    public ResponseDTO<?> writeSubjectQuestion(int id, SubjectQuestionWriteDTO dto) {
+        try {
+            SubjectQuestionEntity subjectQuestionEntity = subjectQuestionRepository.findById(id).get();
+            subjectQuestionEntity.setTitle(dto.getTitle());
+            subjectQuestionEntity.setContent(dto.getContent());
+            subjectQuestionRepository.save(subjectQuestionEntity);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Write Subject Question Success!", null);
+    }
+
+    public ResponseDTO<?> getSubmitByStudentIdAndHomeworkId(int studentId, int homeworkId) {
+        SubmitDTO submitDTO = new SubmitDTO();
+        try {
+            if(submitRepository.existsByStudentIdAndHomeworkId(studentId, homeworkId)){
+                SubmitEntity submitEntity = submitRepository.findByStudentIdAndHomeworkId(studentId, homeworkId).get();
+                submitDTO.setSubmit(submitEntity);
+                if(feedbackRepository.existsById(submitEntity.getSubmitId())) {
+                    submitDTO.setFeedback(feedbackRepository.findById(submitEntity.getSubmitId()).get());
+                }
+                else {
+                    submitDTO.setFeedback(null);
+                }
+            }
+            else {
+                return ResponseDTO.setFailed("Not Exist Data");
+            }
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Submit Load Success!", submitDTO);
     }
 }
