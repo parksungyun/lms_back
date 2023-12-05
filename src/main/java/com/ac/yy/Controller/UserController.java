@@ -88,9 +88,17 @@ public class UserController {
         return result;
     }
 
+    // 학생 개인정보 수정
     @PostMapping("/student/{uid}/update")
     public ResponseDTO<?> studentUpdate(@PathVariable("uid") int id, @RequestBody StudentUpdateDTO dto) {
         ResponseDTO<?> result = userService.studentUpdate(id, dto);
+        return result;
+    }
+
+    // 학생 출결 불러오기
+    @GetMapping("/student/{id}/attendance")
+    public ResponseDTO<?> getStudentAttendanceByStudentId(@PathVariable("id") int id) {
+        ResponseDTO<?> result = userService.getStudentAttendanceByStudentId(id);
         return result;
     }
 }

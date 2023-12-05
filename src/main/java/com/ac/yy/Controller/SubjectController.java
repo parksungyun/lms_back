@@ -302,4 +302,11 @@ public class SubjectController {
         ResponseDTO<?> result = subjectService.writeSubjectQuestion(id, dto);
         return result;
     }
+
+    // 과목에 대한 강의 평가 불러오기
+    @GetMapping("/{id}/review")
+    public ResponseDTO<?> getSubjectReviewBySubjectId(@PathVariable("id") int id) {
+        ResponseDTO<?> result = subjectService.getSubjectReviewBySubjectId(id);
+        return result;
+    }
 }

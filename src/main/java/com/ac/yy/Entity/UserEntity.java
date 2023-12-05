@@ -6,9 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Data
 @AllArgsConstructor
@@ -37,7 +35,6 @@ public class UserEntity {
 
     @Column(name = "user_phone")
     private String userPhone;
-
 
     @Column(name = "user_email")
     private String userEmail;

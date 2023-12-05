@@ -1,12 +1,11 @@
 package com.ac.yy.Entity;
 
+import com.ac.yy.DTO.ReviewDTO;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -33,4 +32,11 @@ public class CourseReviewEntity {
     @Column(name = "reg_date")
     @CreationTimestamp
     private LocalDateTime regDate;
+
+    public CourseReviewEntity(ReviewDTO dto) {
+        this.subjectId = dto.getSubjectId();
+        this.reviewScore = dto.getReviewScore();
+        this.reviewComment = dto.getReviewComment();
+        this.studentId = dto.getStudentId();
+    }
 }

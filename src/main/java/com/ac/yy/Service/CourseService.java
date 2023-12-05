@@ -1,9 +1,6 @@
 package com.ac.yy.Service;
 
-import com.ac.yy.DTO.CourseQnaDTO;
-import com.ac.yy.DTO.CourseQuestionWriteDTO;
-import com.ac.yy.DTO.ResponseDTO;
-import com.ac.yy.DTO.SubjectQnaDTO;
+import com.ac.yy.DTO.*;
 import com.ac.yy.Entity.*;
 import com.ac.yy.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +20,8 @@ public class CourseService {
     @Autowired CourseQuestionRepository courseQuestionRepository;
     @Autowired CourseAnswerRepository courseAnswerRepository;
     @Autowired StudentRepository studentRepository;
+    @Autowired CourseReviewRepository courseReviewRepository;
+    @Autowired SubjectRepository subjectRepository;
     public ResponseDTO<?> getCourseById(int id) {
         CourseEntity course = null;
 
@@ -235,5 +234,46 @@ public class CourseService {
             return ResponseDTO.setFailed("Database Error");
         }
         return ResponseDTO.setSuccess("Write Course Question Success!", null);
+    }
+
+    public ResponseDTO<?> writeReview(ReviewDTO dto) {
+        CourseReviewEntity courseReviewEntity = new CourseReviewEntity(dto);
+        try {
+            courseReviewRepository.save(courseReviewEntity);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Review Write Success!", null);
+    }
+
+    public ResponseDTO<?> getSubjectReviewByCourseId(int id) {
+        List<CourseReviewEntity> reviews = new ArrayList<CourseReviewEntity>();
+        try {
+            List<SubjectEntity> subjects = subjectRepository.findByCourseId(id);
+            subjects.forEach(data -> {
+                List<CourseReviewEntity> temp = courseReviewRepository.findBySubjectIdOrderByReviewScoreDesc(data.getSubjectId());
+                reviews.addAll(temp);
+            });
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Subject Reviews in Course Load Success!", reviews);
+    }
+
+    public ResponseDTO<?> getSubjectReviewByStudentId(int id) {
+        List<CourseReviewEntity> reviews = new ArrayList<CourseReviewEntity>();
+        try {
+            StudentEntity student = studentRepository.findByStudentId(id).get();
+            List<SubjectEntity> subjects = subjectRepository.findByCourseId(student.getCourseId());
+            subjects.forEach(data -> {
+                if(courseReviewRepository.existsByStudentIdAndSubjectId(id, data.getSubjectId())) {
+                    CourseReviewEntity temp = courseReviewRepository.findByStudentIdAndSubjectId(id, data.getSubjectId()).get();
+                    reviews.add(temp);
+                }
+            });
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Student's Subject Reviews Load Success!", reviews);
     }
 }

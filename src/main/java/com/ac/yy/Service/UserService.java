@@ -1,13 +1,7 @@
 package com.ac.yy.Service;
 
-import com.ac.yy.DTO.AcademicAdminDTO;
-import com.ac.yy.DTO.AcademicDTO;
-import com.ac.yy.DTO.ResponseDTO;
-import com.ac.yy.DTO.StudentDTO;
-import com.ac.yy.Entity.AcademicEntity;
-import com.ac.yy.Entity.PositionEntity;
-import com.ac.yy.Entity.StudentEntity;
-import com.ac.yy.Entity.UserEntity;
+import com.ac.yy.DTO.*;
+import com.ac.yy.Entity.*;
 import com.ac.yy.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +17,7 @@ public class UserService {
     @Autowired PositionRepository positionRepository;
     @Autowired CourseRepository courseRepository;
     @Autowired SubjectRepository subjectRepository;
+    @Autowired AttendanceRepository attendanceRepository;
     public ResponseDTO<?> getUserByUid(int uid) {
         StudentDTO studentDTO = new StudentDTO();
         AcademicDTO academicDTO = new AcademicDTO();
@@ -215,5 +210,28 @@ public class UserService {
             return ResponseDTO.setFailed("Database Error");
         }
         return ResponseDTO.setSuccess("Add Success!", dto);
+    }
+
+    public ResponseDTO<?> studentUpdate(int id, StudentUpdateDTO dto) {
+        try {
+            UserEntity userEntity = userRepository.findByUid(id).get();
+            userEntity.setUserAddr(dto.getUserAddr());
+            userEntity.setUserEmail(dto.getUserEmail());
+            userEntity.setUserPhone(dto.getUserPhone());
+            userRepository.save(userEntity);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Student Detail Update Success!", null);
+    }
+
+    public ResponseDTO<?> getStudentAttendanceByStudentId(int id) {
+        List<AttendanceEntity> attendance = new ArrayList<AttendanceEntity>();
+        try {
+            attendance = attendanceRepository.findByStudentIdOrderByAttendDateDesc(id);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Student Attendance Load Success!", attendance);
     }
 }

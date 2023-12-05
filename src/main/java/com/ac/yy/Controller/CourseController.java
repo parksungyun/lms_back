@@ -2,6 +2,7 @@ package com.ac.yy.Controller;
 
 import com.ac.yy.DTO.CourseQuestionWriteDTO;
 import com.ac.yy.DTO.ResponseDTO;
+import com.ac.yy.DTO.ReviewDTO;
 import com.ac.yy.DTO.SubjectQuestionWriteDTO;
 import com.ac.yy.Entity.CourseEntity;
 import com.ac.yy.Service.CourseService;
@@ -122,6 +123,27 @@ public class CourseController {
     @PostMapping("/qna/{id}/mod")
     public ResponseDTO<?> writeCourseQuestion(@PathVariable("id") int id, @RequestBody CourseQuestionWriteDTO dto) {
         ResponseDTO<?> result = courseService.writeCourseQuestion(id, dto);
+        return result;
+    }
+
+    // 강의 평가 등록
+    @PostMapping("/review/write")
+    public ResponseDTO<?> writeReview(@RequestBody ReviewDTO dto) {
+        ResponseDTO<?> result = courseService.writeReview(dto);
+        return result;
+    }
+
+    // 과정의 모든 과목에 대한 강의 평가 불러오기
+    @GetMapping("/{id}/review")
+    public ResponseDTO<?> getSubjectReviewByCourseId(@PathVariable("id") int id) {
+        ResponseDTO<?> result = courseService.getSubjectReviewByCourseId(id);
+        return result;
+    }
+
+    // 학생의 과정의 모든 과목에 대한 강의 평가 불러오기
+    @GetMapping("/student/{id}/review")
+    public ResponseDTO<?> getSubjectReviewByStudentId(@PathVariable("id") int id) {
+        ResponseDTO<?> result = courseService.getSubjectReviewByStudentId(id);
         return result;
     }
 }
