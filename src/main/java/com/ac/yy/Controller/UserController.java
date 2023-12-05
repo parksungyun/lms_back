@@ -2,6 +2,7 @@ package com.ac.yy.Controller;
 
 import com.ac.yy.DTO.AcademicAdminDTO;
 import com.ac.yy.DTO.ResponseDTO;
+import com.ac.yy.DTO.StudentUpdateDTO;
 import com.ac.yy.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -75,15 +76,21 @@ public class UserController {
     }
 
     //admin이 academic 강사, 매니저 정보 수정
-    @PostMapping("/mod")
+    @PostMapping("/academic/mod")
     public ResponseDTO<?> mod(@RequestBody AcademicAdminDTO dto) {
         ResponseDTO<?> result = userService.mod(dto);
         return result;
     }
 
-    @PostMapping("/add")
+    @PostMapping("/academic/add")
     public ResponseDTO<?> add(@RequestBody AcademicAdminDTO dto) {
         ResponseDTO<?> result = userService.add(dto);
+        return result;
+    }
+
+    @PostMapping("/student/{uid}/update")
+    public ResponseDTO<?> studentUpdate(@PathVariable("uid") int id, @RequestBody StudentUpdateDTO dto) {
+        ResponseDTO<?> result = userService.studentUpdate(id, dto);
         return result;
     }
 }
