@@ -101,4 +101,11 @@ public class UserController {
         ResponseDTO<?> result = userService.getStudentAttendanceByStudentId(id);
         return result;
     }
+
+    // 모든 학생 불러오기
+    @GetMapping("/students")
+    public ResponseDTO<?> getAllStudents() {
+        ResponseDTO<?> result = userService.getAllStudents();
+        return result;
+    }
 }

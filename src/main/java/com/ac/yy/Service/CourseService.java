@@ -276,4 +276,17 @@ public class CourseService {
         }
         return ResponseDTO.setSuccess("Student's Subject Reviews Load Success!", reviews);
     }
+
+    public ResponseDTO<?> add(CourseDTO dto) {
+        try {
+            CourseEntity course = new CourseEntity(dto);
+            String savePath = System.getProperty("user.dir") + "\\images\\CourseDefault.png";
+            course.setCoursePhoto(savePath);
+            courseRepository.save(course);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Course Add Success!", null);
+    }
 }

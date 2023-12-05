@@ -1,5 +1,7 @@
 package com.ac.yy.Entity;
 
+import com.ac.yy.DTO.AcademicAdminDTO;
+import com.ac.yy.DTO.CourseDTO;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -19,7 +21,7 @@ public class CourseEntity {
     @Column(name = "course_id")
     private int courseId;
 
-    @Column(name = "academic_id")
+    @Column
     private int academicId;
 
     @Column(name = "course_name")
@@ -56,4 +58,16 @@ public class CourseEntity {
     @Column(name = "mod_date")
     @UpdateTimestamp
     private LocalDateTime modDate;
+
+    public CourseEntity(CourseDTO dto) {
+        this.academicId = dto.getAcademicId();
+        this.courseName = dto.getCourseName();
+        this.subjectNo = dto.getSubjectNo();
+        this.capacity = dto.getCapacity();
+        this.startDate = dto.getStartDate();
+        this.endDate = dto.getEndDate();
+        this.recruitStart = dto.getRecruitStart();
+        this.recruitEnd = dto.getRecruitEnd();
+        this.courseInfo = dto.getCourseInfo();
+    }
 }

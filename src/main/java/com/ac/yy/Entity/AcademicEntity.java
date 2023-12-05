@@ -18,7 +18,9 @@ import java.util.Date;
 @Table(name = "academics")
 public class AcademicEntity {
     @Id
-    @Column(name = "academic_id")
+    @ManyToOne
+    @JoinColumn(name = "academic_id", nullable = false)
+//    @Column(name = "academic_id")
     private int academicId;
 
     @Column(nullable = false, unique = true)

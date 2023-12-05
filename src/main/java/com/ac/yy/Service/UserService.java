@@ -201,8 +201,10 @@ public class UserService {
     public ResponseDTO<?> add(AcademicAdminDTO dto) {
         try {
             int position = positionRepository.findByPositionName(dto.getUserPosition()).get().getPositionId();
+            String savePath = System.getProperty("user.dir") + "\\images\\UserDefault.png";
             AcademicEntity academic = new AcademicEntity(dto);
             academic.setPosition(position);
+            academic.setUserPhoto(savePath);
             academicRepository.save(academic);
         }
         catch (Exception e) {
@@ -233,5 +235,25 @@ public class UserService {
             return ResponseDTO.setFailed("Database Error");
         }
         return ResponseDTO.setSuccess("Student Attendance Load Success!", attendance);
+    }
+
+    public ResponseDTO<?> getAllStudents() {
+        List<StudentDTO> students = new ArrayList<StudentDTO>();
+        List<StudentEntity> temp = new ArrayList<StudentEntity>();
+
+        try {
+            temp = studentRepository.findAll();
+            temp.forEach(data -> {
+                StudentDTO tempStudentDTO = new StudentDTO();
+                tempStudentDTO.setStudent(data);
+                tempStudentDTO.setUser(userRepository.findByUid(data.getUid()).get());
+                tempStudentDTO.getUser().setUserPw("");
+                students.add(tempStudentDTO);
+            });
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+
+        return ResponseDTO.setSuccess("Students Load Success!", students);
     }
 }

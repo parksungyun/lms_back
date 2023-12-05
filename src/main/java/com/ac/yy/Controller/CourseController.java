@@ -1,9 +1,6 @@
 package com.ac.yy.Controller;
 
-import com.ac.yy.DTO.CourseQuestionWriteDTO;
-import com.ac.yy.DTO.ResponseDTO;
-import com.ac.yy.DTO.ReviewDTO;
-import com.ac.yy.DTO.SubjectQuestionWriteDTO;
+import com.ac.yy.DTO.*;
 import com.ac.yy.Entity.CourseEntity;
 import com.ac.yy.Service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -144,6 +141,13 @@ public class CourseController {
     @GetMapping("/student/{id}/review")
     public ResponseDTO<?> getSubjectReviewByStudentId(@PathVariable("id") int id) {
         ResponseDTO<?> result = courseService.getSubjectReviewByStudentId(id);
+        return result;
+    }
+
+    // Admin에서 Course 새로 추가
+    @PostMapping("/add")
+    public ResponseDTO<?> add(CourseDTO dto) {
+        ResponseDTO<?> result = courseService.add(dto);
         return result;
     }
 }
