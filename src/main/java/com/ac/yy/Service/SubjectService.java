@@ -26,6 +26,7 @@ public class SubjectService {
     @Autowired SubjectAnswerRepository subjectAnswerRepository;
     @Autowired StudentRepository studentRepository;
     @Autowired UserRepository userRepository;
+    @Autowired CourseReviewRepository courseReviewRepository;
     public ResponseDTO<?> getSubjectById(int id) {
         SubjectDTO subject = new SubjectDTO();
         SubjectEntity subjectTemp = null;
@@ -685,5 +686,15 @@ public class SubjectService {
             return ResponseDTO.setFailed("Database Error");
         }
         return ResponseDTO.setSuccess("Submit Load Success!", submitDTO);
+    }
+
+    public ResponseDTO<?> getSubjectReviewBySubjectId(int id) {
+        List<CourseReviewEntity> reviews = new ArrayList<CourseReviewEntity>();
+        try {
+            reviews = courseReviewRepository.findBySubjectIdOrderByReviewScoreDesc(id);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Subject Reviews in Course Load Success!", reviews);
     }
 }
