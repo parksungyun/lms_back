@@ -6,6 +6,7 @@ import com.ac.yy.Service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping(value = "/api/course")
@@ -146,7 +147,7 @@ public class CourseController {
 
     // Admin에서 Course 새로 추가
     @PostMapping("/add")
-    public ResponseDTO<?> add(CourseDTO dto) {
+    public ResponseDTO<?> add(@RequestBody CourseDTO dto) {
         ResponseDTO<?> result = courseService.add(dto);
         return result;
     }

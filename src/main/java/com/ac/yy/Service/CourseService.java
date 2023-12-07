@@ -5,7 +5,9 @@ import com.ac.yy.Entity.*;
 import com.ac.yy.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -22,6 +24,7 @@ public class CourseService {
     @Autowired StudentRepository studentRepository;
     @Autowired CourseReviewRepository courseReviewRepository;
     @Autowired SubjectRepository subjectRepository;
+    @Autowired AcademicRepository academicRepository;
     public ResponseDTO<?> getCourseById(int id) {
         CourseEntity course = null;
 
@@ -278,15 +281,16 @@ public class CourseService {
     }
 
     public ResponseDTO<?> add(CourseDTO dto) {
+        CourseEntity result = null;
         try {
             CourseEntity course = new CourseEntity(dto);
             String savePath = System.getProperty("user.dir") + "\\images\\CourseDefault.png";
             course.setCoursePhoto(savePath);
-            courseRepository.save(course);
+            result = courseRepository.save(course);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseDTO.setFailed("Database Error");
         }
-        return ResponseDTO.setSuccess("Course Add Success!", null);
+        return ResponseDTO.setSuccess("Course Add Success!", result);
     }
 }

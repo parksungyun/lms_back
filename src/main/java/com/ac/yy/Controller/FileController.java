@@ -23,7 +23,7 @@ public class FileController {
 
     @PostMapping("/upload/course/{name}")
     public ResponseDTO<?> courseFileUpload(@RequestParam(value = "file", required = false) MultipartFile file, @PathVariable("name") String name) {
-        ResponseDTO<?> result = fileService.CoursefileUpload(file,name);
+        ResponseDTO<?> result = fileService.CoursefileUpload(file, name);
         return result;
     }
 }
