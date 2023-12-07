@@ -21,7 +21,7 @@ public class CourseEntity {
     @Column(name = "course_id")
     private int courseId;
 
-    @Column
+    @JoinColumn(name = "academic_id", nullable = false)
     private int academicId;
 
     @Column(name = "course_name")
