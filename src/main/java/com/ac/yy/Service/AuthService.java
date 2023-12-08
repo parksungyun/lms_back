@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.xml.ws.Response;
+import java.util.Objects;
 
 @Service
 public class AuthService {
@@ -145,6 +146,22 @@ public class AuthService {
             if(result == 0) return ResponseDTO.setFailed("Error");
         } catch (Exception e) {
             e.printStackTrace();
+            return ResponseDTO.setFailed("Database Error");
+        }
+
+        return ResponseDTO.setSuccess("ChangePW Success", null);
+    }
+
+    public ResponseDTO<?> changePW(int id, ChangePwDTO dto) {
+        try {
+            UserEntity user = userRepository.findByUid(id).get();
+            if(Objects.equals(user.getUserPw(), dto.getCurrentPw())) {
+                userRepository.modifyingUserPwByUid(dto.getNewPw(), id);
+            }
+            else {
+                return ResponseDTO.setFailed("Password doesn't match");
+            }
+        } catch (Exception e) {
             return ResponseDTO.setFailed("Database Error");
         }
 

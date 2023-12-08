@@ -138,10 +138,32 @@ public class UserController {
         return result;
     }
 
+    // 과정에 학생 추가
     @PostMapping("/student/{uid}/add/{id}")
-    public ResponseDTO<?> studentadd(@PathVariable("uid") int userUid ,@PathVariable("id") int id) {
+    public ResponseDTO<?> studentAdd(@PathVariable("uid") int userUid ,@PathVariable("id") int id) {
         System.out.println(userUid);
-        ResponseDTO<?> result = userService.studentadd(userUid, id);
+        ResponseDTO<?> result = userService.studentAdd(userUid, id);
+        return result;
+    }
+
+    // 출결 사항 불러오기(출결코드)
+    @GetMapping("/student/{id}/attendance/code/{code}")
+    public ResponseDTO<?> getStudentAttendanceByStudentId(@PathVariable("id") int id, @PathVariable("code") int code) {
+        ResponseDTO<?> result = userService.getStudentAttendanceByStudentId(id, code);
+        return result;
+    }
+
+    // 출결 사항 불러오기(기간)
+    @GetMapping("/student/{id}/attendance/period/{start}/{end}")
+    public ResponseDTO<?> getStudentAttendanceByStudentId(@PathVariable("id") int id, @PathVariable("start") String start, @PathVariable("end") String end) {
+        ResponseDTO<?> result = userService.getStudentAttendanceByStudentId(id, start, end);
+        return result;
+    }
+
+    // 출결 사항 불러오기(출결코드, 기간)
+    @GetMapping("/student/{id}/attendance/code/{code}/period/{start}/{end}")
+    public ResponseDTO<?> getStudentAttendanceByStudentId(@PathVariable("id") int id, @PathVariable("code") int code, @PathVariable("start") String start, @PathVariable("end") String end) {
+        ResponseDTO<?> result = userService.getStudentAttendanceByStudentId(id, code, start, end);
         return result;
     }
 }

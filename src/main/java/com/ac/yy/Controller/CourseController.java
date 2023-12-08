@@ -151,4 +151,11 @@ public class CourseController {
         ResponseDTO<?> result = courseService.add(dto);
         return result;
     }
+
+    // 학생으로 과정 정보 불러오기
+    @GetMapping("/student/{id}")
+    public ResponseDTO<?> getCourseByStudentId(@PathVariable("id") int id) {
+        ResponseDTO<?> result = courseService.getCourseByStudentId(id);
+        return result;
+    }
 }
