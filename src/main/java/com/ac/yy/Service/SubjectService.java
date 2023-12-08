@@ -699,19 +699,19 @@ public class SubjectService {
         return ResponseDTO.setSuccess("Subject Reviews in Course Load Success!", reviews);
     }
 
-    public ResponseDTO<?> add(List<SubjectAddDTO> subjects, String name) {
+    public ResponseDTO<?> add(List<SubjectAddDTO> subjects, int id) {
         List<SubjectEntity> subjectEntity = new ArrayList<SubjectEntity>();
         try {
             subjects.forEach(sub -> {
-                CourseEntity course = courseRepository.findTopByCourseNameOrderByRegDateDesc(name).get();
+                CourseEntity course = courseRepository.findById(id).get();
                 SubjectEntity subject = new SubjectEntity();
                 subject.setCourseId(course.getCourseId());
                 subject.setSubjectName(sub.getSubjectName());
                 subject.setAcademicId(sub.getAcademicId());
-                subjectRepository.save(subject);
+                subjectEntity.add(subject);
             });
             System.out.println(subjectEntity);
-            subjectRepository.flush();
+            subjectRepository.saveAll(subjectEntity);
         }
         catch (Exception e) {
             e.printStackTrace();

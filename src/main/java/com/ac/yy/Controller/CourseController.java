@@ -151,4 +151,10 @@ public class CourseController {
         ResponseDTO<?> result = courseService.add(dto);
         return result;
     }
+
+//    @PostMapping("/mod/{id}")
+//    public ResponseDTO<?> mod(@RequestBody CourseDTO dto, @PathVariable("id") int id) {
+//        ResponseDTO<?> result = courseService.mod(dto, id);
+//        return result;
+//    }
 }

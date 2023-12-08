@@ -21,9 +21,9 @@ public class FileController {
         return result;
     }
 
-    @PostMapping("/upload/course/{name}")
-    public ResponseDTO<?> courseFileUpload(@RequestParam(value = "file", required = false) MultipartFile file, @PathVariable("name") String name) {
-        ResponseDTO<?> result = fileService.CoursefileUpload(file, name);
+    @PostMapping("/upload/course/{id}")
+    public ResponseDTO<?> courseFileUpload(@RequestParam(value = "file", required = false) MultipartFile file, @PathVariable("id") int id) {
+        ResponseDTO<?> result = fileService.CoursefileUpload(file, id);
         return result;
     }
 }

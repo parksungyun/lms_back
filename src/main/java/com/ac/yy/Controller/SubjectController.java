@@ -317,10 +317,18 @@ public class SubjectController {
     }
 
     //admin course에서 subject 추가
-    @PostMapping("/add/{name}")
-    public ResponseDTO<?> add(@RequestBody List<SubjectAddDTO> subjects, @PathVariable("name") String name) {
+    @PostMapping("/add/{id}")
+    public ResponseDTO<?> add(@RequestBody List<SubjectAddDTO> subjects, @PathVariable("id") int id) {
         System.out.println(subjects);
-        ResponseDTO<?> result = subjectService.add(subjects, name);
+        ResponseDTO<?> result = subjectService.add(subjects, id);
         return result;
     }
+
+    //admin course에서 subject 수정
+//    @PostMapping("/mod/{id}/{check}")
+//    public ResponseDTO<?> mod(@RequestBody List<SubjectAddDTO> subjects, @PathVariable("id") int id, @PathVariable("check") int check) {
+//        System.out.println(subjects);
+//        ResponseDTO<?> result = subjectService.mod(subjects, id, check);
+//        return result;
+//    }
 }

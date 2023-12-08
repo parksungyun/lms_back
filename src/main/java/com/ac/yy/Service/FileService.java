@@ -44,7 +44,7 @@ public class FileService {
         return ResponseDTO.setSuccess("Upload Success!", filePath);
     }
 
-    public ResponseDTO<?> CoursefileUpload(MultipartFile file, String name){
+    public ResponseDTO<?> CoursefileUpload(MultipartFile file, int id){
         CourseEntity course = null;
         String extension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
         String fileName = UUID.randomUUID().toString().concat(extension);
@@ -61,7 +61,7 @@ public class FileService {
 
         try {
             file.transferTo(new File(filePath));
-            course = courseRepository.findTopByCourseNameOrderByRegDateDesc(name).get();
+            course = courseRepository.findById(id).get();
             courseRepository.modifyingPhotoByCourseId(course.getCourseId(), filePath);
             System.out.println(course);
         }
