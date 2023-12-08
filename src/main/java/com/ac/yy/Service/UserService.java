@@ -482,7 +482,6 @@ public class UserService {
             LocalDate temp = start;
 
             long days = ChronoUnit.DAYS.between(start, end);
-            System.out.println("1: " + days);
 
             int period = 0;
             for (int i = 0; i <= days; i++) {
@@ -510,5 +509,19 @@ public class UserService {
             return ResponseDTO.setFailed("Database Error");
         }
         return ResponseDTO.setSuccess("Student's score Load Success!", studentScore);
+    }
+
+    public ResponseDTO<?> studentadd(int userUid, int id) {
+        try {
+            StudentEntity student = new StudentEntity();
+            student.setUid(userUid);
+            student.setCourseId(id);
+            studentRepository.save(student);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Student Add Success!", null);
     }
 }

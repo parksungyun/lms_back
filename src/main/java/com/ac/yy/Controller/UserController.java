@@ -4,6 +4,7 @@ import com.ac.yy.DTO.AcademicAdminDTO;
 import com.ac.yy.DTO.ResponseDTO;
 import com.ac.yy.DTO.StudentUpdateDTO;
 import com.ac.yy.Service.UserService;
+import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -134,6 +135,13 @@ public class UserController {
     @GetMapping("/score/student/{id}")
     public ResponseDTO<?> getScoreByStudentId(@PathVariable("id") int id) {
         ResponseDTO<?> result = userService.getScoreByStudentId(id);
+        return result;
+    }
+
+    @PostMapping("/student/{uid}/add/{id}")
+    public ResponseDTO<?> studentadd(@PathVariable("uid") int userUid ,@PathVariable("id") int id) {
+        System.out.println(userUid);
+        ResponseDTO<?> result = userService.studentadd(userUid, id);
         return result;
     }
 }
