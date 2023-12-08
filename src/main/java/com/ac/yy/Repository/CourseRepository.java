@@ -14,8 +14,10 @@ import java.util.Optional;
 public interface CourseRepository extends JpaRepository<CourseEntity, Integer> {
     List<CourseEntity> findByAcademicId(int academicId);
 
+    Optional<CourseEntity> findTopByCourseNameOrderByRegDateDesc(String name);
+
     @Transactional
     @Modifying
-    @Query(value = "UPDATE courses SET courses.course_photo=?2 WHERE courses.course_name=?1", nativeQuery = true)
-    int modifyingPhotoByCourseName(String name, String filepath);
+    @Query(value = "UPDATE courses SET courses.course_photo=?2 WHERE courses.course_id=?1", nativeQuery = true)
+    int modifyingPhotoByCourseId(int id, String filepath);
 }

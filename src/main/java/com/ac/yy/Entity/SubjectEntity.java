@@ -1,5 +1,6 @@
 package com.ac.yy.Entity;
 
+import com.ac.yy.DTO.CourseDTO;
 import lombok.*;
 
 import javax.persistence.*;

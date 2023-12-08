@@ -1,9 +1,15 @@
 package com.ac.yy.Controller;
 
 import com.ac.yy.DTO.*;
+import com.ac.yy.Entity.SubjectEntity;
 import com.ac.yy.Service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.security.auth.Subject;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping(value = "/api/subject")
@@ -307,6 +313,14 @@ public class SubjectController {
     @GetMapping("/{id}/review")
     public ResponseDTO<?> getSubjectReviewBySubjectId(@PathVariable("id") int id) {
         ResponseDTO<?> result = subjectService.getSubjectReviewBySubjectId(id);
+        return result;
+    }
+
+    //admin course에서 subject 추가
+    @PostMapping("/add/{name}")
+    public ResponseDTO<?> add(@RequestBody List<SubjectAddDTO> subjects, @PathVariable("name") String name) {
+        System.out.println(subjects);
+        ResponseDTO<?> result = subjectService.add(subjects, name);
         return result;
     }
 }

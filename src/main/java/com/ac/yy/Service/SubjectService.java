@@ -7,6 +7,7 @@ import javafx.scene.effect.SepiaTone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.security.auth.Subject;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
@@ -696,5 +697,26 @@ public class SubjectService {
             return ResponseDTO.setFailed("Database Error");
         }
         return ResponseDTO.setSuccess("Subject Reviews in Course Load Success!", reviews);
+    }
+
+    public ResponseDTO<?> add(List<SubjectAddDTO> subjects, String name) {
+        List<SubjectEntity> subjectEntity = new ArrayList<SubjectEntity>();
+        try {
+            subjects.forEach(sub -> {
+                CourseEntity course = courseRepository.findTopByCourseNameOrderByRegDateDesc(name).get();
+                SubjectEntity subject = new SubjectEntity();
+                subject.setCourseId(course.getCourseId());
+                subject.setSubjectName(sub.getSubjectName());
+                subject.setAcademicId(sub.getAcademicId());
+                subjectRepository.save(subject);
+            });
+            System.out.println(subjectEntity);
+            subjectRepository.flush();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Subject Add Success!", subjects);
     }
 }
