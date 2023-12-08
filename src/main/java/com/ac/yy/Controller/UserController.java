@@ -108,4 +108,32 @@ public class UserController {
         ResponseDTO<?> result = userService.getAllStudents();
         return result;
     }
+
+    // 학생이 작성한 게시글 불러오기
+    @GetMapping("/posts/student/{id}")
+    public ResponseDTO<?> getAllMyPostsByStudentId(@PathVariable("id") int id) {
+        ResponseDTO<?> result = userService.getAllPosts(id, 0);
+        return result;
+    }
+
+    // 매니저나 강사가 작성한 게시글 불러오기
+    @GetMapping("/posts/academic/{id}")
+    public ResponseDTO<?> getAllMyPostsByAcademicId(@PathVariable("id") int id) {
+        ResponseDTO<?> result = userService.getAllPosts(id, 1);
+        return result;
+    }
+
+    // 매니저나 강사가 작성한 답글 불러오기
+    @GetMapping("/replies/academic/{id}")
+    public ResponseDTO<?> getAllMyRepliesByAcademicId(@PathVariable("id") int id) {
+        ResponseDTO<?> result = userService.getAllReplies(id);
+        return result;
+    }
+
+    // 학생 성적 조회
+    @GetMapping("/score/student/{id}")
+    public ResponseDTO<?> getScoreByStudentId(@PathVariable("id") int id) {
+        ResponseDTO<?> result = userService.getScoreByStudentId(id);
+        return result;
+    }
 }

@@ -6,8 +6,9 @@ import com.ac.yy.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class UserService {
@@ -18,6 +19,19 @@ public class UserService {
     @Autowired CourseRepository courseRepository;
     @Autowired SubjectRepository subjectRepository;
     @Autowired AttendanceRepository attendanceRepository;
+    @Autowired CourseBoardRepository courseBoardRepository;
+    @Autowired CourseQuestionRepository courseQuestionRepository;
+    @Autowired SubjectQuestionRepository subjectQuestionRepository;
+    @Autowired SubjectBoardRepository subjectBoardRepository;
+    @Autowired AdmissionQuestionRepository admissionQuestionRepository;
+    @Autowired CourseAnswerRepository courseAnswerRepository;
+    @Autowired SubjectAnswerRepository subjectAnswerRepository;
+    @Autowired AdmissionAnswerRepository admissionAnswerRepository;
+    @Autowired HomeworkRepository homeworkRepository;
+    @Autowired LectureRepository lectureRepository;
+    @Autowired SubmitRepository submitRepository;
+    @Autowired FeedbackRepository feedbackRepository;
+    @Autowired StudyRepository studyRepository;
     public ResponseDTO<?> getUserByUid(int uid) {
         StudentDTO studentDTO = new StudentDTO();
         AcademicDTO academicDTO = new AcademicDTO();
@@ -255,5 +269,237 @@ public class UserService {
         }
 
         return ResponseDTO.setSuccess("Students Load Success!", students);
+    }
+
+    public ResponseDTO<?> getAllPosts(int id, int type) {
+        List<MyPostDTO> posts = new ArrayList<MyPostDTO>();
+        try {
+            // student
+            if(type == 0) {
+                List<CourseQuestionEntity> courseQuestions = courseQuestionRepository.findByStudentIdOrderByRegDateDesc(id);
+                List<SubjectQuestionEntity> subjectQuestions = subjectQuestionRepository.findByStudentIdOrderByRegDateDesc(id);
+                for (CourseQuestionEntity courseQuestion : courseQuestions) {
+                    MyPostDTO temp = new MyPostDTO();
+                    temp.setId(courseQuestion.getCourseQuestionId());
+                    temp.setType("cqna");
+                    temp.setTitle(courseQuestion.getTitle());
+                    temp.setContent(courseQuestion.getContent());
+                    temp.setRegDate(courseQuestion.getRegDate());
+                    posts.add(temp);
+                }
+                for (SubjectQuestionEntity data : subjectQuestions) {
+                    MyPostDTO temp = new MyPostDTO();
+                    temp.setId(data.getSubjectQuestionId());
+                    temp.setType(data.getSubjectId() + "/sqna");
+                    temp.setTitle(data.getTitle());
+                    temp.setContent(data.getContent());
+                    temp.setRegDate(data.getRegDate());
+                    posts.add(temp);
+                }
+                posts.sort((o1, o2) -> o2.getRegDate().compareTo(o1.getRegDate()));
+            }
+            // academic
+            else if(type == 1) {
+                AcademicEntity user = academicRepository.findByAcademicId(id).get();
+                // manager
+                if(user.getDept() == 0) {
+                    List<CourseBoardEntity> courseBoard = courseBoardRepository.findByAcademicId(id);
+                    for (CourseBoardEntity data : courseBoard) {
+                        MyPostDTO temp = new MyPostDTO();
+                        temp.setId(data.getCourseBoardId());
+                        temp.setType(data.getCourseId() + "/board");
+                        temp.setTitle(data.getTitle());
+                        temp.setContent(data.getContent());
+                        temp.setRegDate(data.getRegDate());
+                        posts.add(temp);
+                    }
+                    posts.sort((o1, o2) -> o2.getRegDate().compareTo(o1.getRegDate()));
+                }
+                // trainer
+                else if(user.getDept() == 1) {
+                    List<SubjectBoardEntity> subjectBoard = subjectBoardRepository.findByAcademicId(id);
+                    List<LectureEntity> lectures = lectureRepository.findByAcademicId(id);
+                    List<HomeworkEntity> homeworks = homeworkRepository.findByAcademicId(id);
+                    for (SubjectBoardEntity subjectBoardEntity : subjectBoard) {
+                        MyPostDTO temp = new MyPostDTO();
+                        temp.setId(subjectBoardEntity.getSubjectBoardId());
+                        temp.setType(subjectBoardEntity.getSubjectId() + "/board");
+                        temp.setTitle(subjectBoardEntity.getTitle());
+                        temp.setContent(subjectBoardEntity.getContent());
+                        temp.setRegDate(subjectBoardEntity.getRegDate());
+                        posts.add(temp);
+                    }
+                    for (LectureEntity lecture : lectures) {
+                        MyPostDTO temp = new MyPostDTO();
+                        temp.setId(lecture.getLectureId());
+                        temp.setType(lecture.getSubjectId() + "/lecture");
+                        temp.setTitle(lecture.getTitle());
+                        temp.setContent(lecture.getContent());
+                        temp.setRegDate(lecture.getRegDate());
+                        posts.add(temp);
+                    }
+                    for (HomeworkEntity data : homeworks) {
+                        MyPostDTO temp = new MyPostDTO();
+                        temp.setId(data.getHomeworkId());
+                        temp.setType(data.getSubjectId() + "/homework");
+                        temp.setTitle(data.getTitle());
+                        temp.setContent(data.getContent());
+                        temp.setRegDate(data.getRegDate());
+                        posts.add(temp);
+                    }
+                    posts.sort((o1, o2) -> o2.getRegDate().compareTo(o1.getRegDate()));
+                }
+                else {
+                    return ResponseDTO.setFailed("Error");
+                }
+            }
+            else {
+                return ResponseDTO.setFailed("Error");
+            }
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+
+        return ResponseDTO.setSuccess("My Posts Load Success!", posts);
+    }
+
+    public ResponseDTO<?> getAllReplies(int id) {
+        List<MyReplyDTO> replies = new ArrayList<MyReplyDTO>();
+        try {
+            AcademicEntity user = academicRepository.findByAcademicId(id).get();
+            // manager
+            if(user.getDept() == 0) {
+                List<CourseAnswerEntity> courseAnswers = courseAnswerRepository.findByAcademicIdOrderByAnswerRegDateDesc(id);
+                List<AdmissionAnswerEntity> admissionAnswers = admissionAnswerRepository.findByAcademicId(id);
+                for (CourseAnswerEntity data : courseAnswers) {
+                    MyReplyDTO temp = new MyReplyDTO();
+                    temp.setId(data.getCourseQuestionId());
+                    temp.setType(courseQuestionRepository.findById(data.getCourseQuestionId()).get().getCourseId() + "/qna");
+                    temp.setTitle(courseQuestionRepository.findById(data.getCourseQuestionId()).get().getTitle());
+                    temp.setContent(data.getAnswerContent());
+                    temp.setRegDate(data.getAnswerRegDate());
+                    replies.add(temp);
+                }
+                for (AdmissionAnswerEntity data : admissionAnswers) {
+                    MyReplyDTO temp = new MyReplyDTO();
+                    temp.setId(data.getAdmissionQuestionId());
+                    temp.setType("admission");
+                    temp.setTitle(admissionQuestionRepository.findById(data.getAdmissionQuestionId()).get().getTitle());
+                    temp.setContent(data.getAnswerContent());
+                    temp.setRegDate(data.getAnswerRegDate());
+                    replies.add(temp);
+                }
+                replies.sort((o1, o2) -> o2.getRegDate().compareTo(o1.getRegDate()));
+            }
+            // trainer
+            if(user.getDept() == 1) {
+                List<SubjectAnswerEntity> subjectAnswers = subjectAnswerRepository.findByAcademicIdOrderByAnswerRegDateDesc(id);
+                for (SubjectAnswerEntity data : subjectAnswers) {
+                    MyReplyDTO temp = new MyReplyDTO();
+                    temp.setId(data.getSubjectQuestionId());
+                    temp.setType(subjectQuestionRepository.findById(data.getSubjectQuestionId()).get().getSubjectId() + "/qna");
+                    temp.setTitle(subjectQuestionRepository.findById(data.getSubjectQuestionId()).get().getTitle());
+                    temp.setContent(data.getAnswerContent());
+                    temp.setRegDate(data.getAnswerRegDate());
+                    replies.add(temp);
+                }
+                replies.sort((o1, o2) -> o2.getRegDate().compareTo(o1.getRegDate()));
+            }
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+
+        return ResponseDTO.setSuccess("My Replies Load Success!", replies);
+    }
+
+    public ResponseDTO<?> getScoreByStudentId(int id) {
+        StudentScoreDTO studentScore = new StudentScoreDTO();
+        List<StudentSubjectScoreDTO> subjectScores = new ArrayList<StudentSubjectScoreDTO>();
+        try {
+            StudentEntity student = studentRepository.findByStudentId(id).get();
+            studentScore.setCourse(courseRepository.findById(student.getCourseId()).get());
+
+            List<SubjectEntity> subjects = subjectRepository.findByCourseId(studentScore.getCourse().getCourseId());
+            subjects.forEach(data -> {
+                StudentSubjectScoreDTO temp = new StudentSubjectScoreDTO();
+                temp.setSubject(data);
+
+                // 과목별 과제 점수
+                List<HomeworkEntity> homeworks = homeworkRepository.findBySubjectIdOrderByStartDateDesc(data.getSubjectId());
+                AtomicInteger tempScore = new AtomicInteger(0);
+                homeworks.forEach(hw -> {
+                    if(submitRepository.existsByStudentIdAndHomeworkId(id, hw.getHomeworkId())) {
+                        SubmitEntity submit = submitRepository.findByStudentIdAndHomeworkId(id, hw.getHomeworkId()).get();
+                        if(feedbackRepository.existsById(submit.getSubmitId())) {
+                            FeedbackEntity feedback = feedbackRepository.findById(submit.getSubmitId()).get();
+                            tempScore.set(tempScore.get() + feedback.getHwScore());
+                        }
+                    }
+                });
+                temp.setHomework(tempScore.get() / homeworks.size());
+
+                // 과목별 강의 점수
+                List<LectureEntity> lectures = lectureRepository.findBySubjectId(data.getSubjectId());
+                tempScore.set(0);
+                lectures.forEach(l -> {
+                    if(studyRepository.existsByStudentIdAndLectureId(id, l.getLectureId())) {
+                        StudyEntity study = studyRepository.findByStudentIdAndLectureId(id, l.getLectureId()).get();
+                        if(study.getIsStudy() == 2) {
+                            tempScore.set(tempScore.get() + 1);
+                        }
+                    }
+                });
+                temp.setLecture(tempScore.get() / lectures.size() * 100);
+                subjectScores.add(temp);
+            });
+
+            // 총 강의 점수
+            // 총 과제 점수
+            AtomicInteger tempLecture = new AtomicInteger(0);
+            AtomicInteger tempHomework = new AtomicInteger(0);
+            subjectScores.forEach(data -> {
+                tempLecture.set(tempLecture.get() + data.getLecture());
+                tempHomework.set(tempHomework.get() + data.getHomework());
+            });
+            tempLecture.set(tempLecture.get() / subjectScores.size());
+            tempHomework.set(tempHomework.get() / subjectScores.size());
+
+            studentScore.setLecture(tempLecture.get());
+            studentScore.setHomework(tempLecture.get());
+
+            // 과정 일수(평일) 계산
+            String start = studentScore.getCourse().getStartDate();
+            String end = studentScore.getCourse().getEndDate();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+            Calendar calStart = Calendar.getInstance();
+            Calendar calEnd = Calendar.getInstance();
+            AtomicInteger period = new AtomicInteger(0);
+
+            calStart.setTime(sdf.parse(start));
+            calEnd.setTime(sdf.parse(end));
+
+            while(!calStart.after(calEnd)) {
+                int day = calStart.get(Calendar.DAY_OF_WEEK);
+                if((day != Calendar.SATURDAY) && (day != Calendar.SUNDAY)) {
+                    period.set(period.get() + 1);
+                }
+                calStart.add(Calendar.DATE, 1);
+            }
+
+            // 출석 점수
+            AtomicInteger attendCount = new AtomicInteger(0);
+            List<AttendanceEntity> attendance = attendanceRepository.findByStudentIdOrderByAttendDateDesc(id);
+            attendance.forEach(data -> {
+                if(data.getAbsenceId() < 99) {
+                    attendCount.set(attendCount.get() + 1);
+                }
+            });
+            studentScore.setAttendance(attendCount.get() / period.get() * 100);
+
+            studentScore.setTotal((float) ((studentScore.getAttendance() * 0.2) + (studentScore.getHomework() * 0.4) + (studentScore.getLecture() * 0.4)));
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Student's score Load Success!", studentScore);
     }
 }
