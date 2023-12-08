@@ -7,6 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -436,7 +440,7 @@ public class UserService {
                         }
                     }
                 });
-                temp.setHomework(tempScore.get() / homeworks.size());
+                temp.setHomework(Math.round((float) tempScore.get() / homeworks.size()));
 
                 // 과목별 강의 점수
                 List<LectureEntity> lectures = lectureRepository.findBySubjectId(data.getSubjectId());
@@ -444,14 +448,16 @@ public class UserService {
                 lectures.forEach(l -> {
                     if(studyRepository.existsByStudentIdAndLectureId(id, l.getLectureId())) {
                         StudyEntity study = studyRepository.findByStudentIdAndLectureId(id, l.getLectureId()).get();
-                        if(study.getIsStudy() == 2) {
+                        if(study.getIsStudy() == 1) {
                             tempScore.set(tempScore.get() + 1);
                         }
                     }
                 });
-                temp.setLecture(tempScore.get() / lectures.size() * 100);
+                temp.setLecture(Math.round((float) tempScore.get() / lectures.size() * 100));
                 subjectScores.add(temp);
             });
+
+            studentScore.setSubjectScore(subjectScores);
 
             // 총 강의 점수
             // 총 과제 점수
@@ -461,29 +467,32 @@ public class UserService {
                 tempLecture.set(tempLecture.get() + data.getLecture());
                 tempHomework.set(tempHomework.get() + data.getHomework());
             });
-            tempLecture.set(tempLecture.get() / subjectScores.size());
-            tempHomework.set(tempHomework.get() / subjectScores.size());
+            tempLecture.set(Math.round((float) tempLecture.get() / subjectScores.size()));
+            tempHomework.set(Math.round((float)tempHomework.get() / subjectScores.size()));
 
             studentScore.setLecture(tempLecture.get());
-            studentScore.setHomework(tempLecture.get());
+            studentScore.setHomework(tempHomework.get());
 
             // 과정 일수(평일) 계산
-            String start = studentScore.getCourse().getStartDate();
-            String end = studentScore.getCourse().getEndDate();
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-            Calendar calStart = Calendar.getInstance();
-            Calendar calEnd = Calendar.getInstance();
-            AtomicInteger period = new AtomicInteger(0);
+            String startDate = studentScore.getCourse().getStartDate();
+            String endDate = studentScore.getCourse().getEndDate();
 
-            calStart.setTime(sdf.parse(start));
-            calEnd.setTime(sdf.parse(end));
+            LocalDate start = LocalDate.of(Integer.parseInt(startDate.split("-")[0]), Integer.parseInt(startDate.split("-")[1]), Integer.parseInt(startDate.split("-")[2]));
+            LocalDate end = LocalDate.of(Integer.parseInt(endDate.split("-")[0]), Integer.parseInt(endDate.split("-")[1]), Integer.parseInt(endDate.split("-")[2]));
+            LocalDate temp = start;
 
-            while(!calStart.after(calEnd)) {
-                int day = calStart.get(Calendar.DAY_OF_WEEK);
-                if((day != Calendar.SATURDAY) && (day != Calendar.SUNDAY)) {
-                    period.set(period.get() + 1);
+            long days = ChronoUnit.DAYS.between(start, end);
+            System.out.println("1: " + days);
+
+            int period = 0;
+            for (int i = 0; i <= days; i++) {
+                DayOfWeek day = temp.getDayOfWeek();
+                System.out.println(day);
+                int number = day.getValue();
+                if(number != 6 && number != 7) {
+                    period++;
                 }
-                calStart.add(Calendar.DATE, 1);
+                temp = temp.plusDays(1);
             }
 
             // 출석 점수
@@ -494,7 +503,7 @@ public class UserService {
                     attendCount.set(attendCount.get() + 1);
                 }
             });
-            studentScore.setAttendance(attendCount.get() / period.get() * 100);
+            studentScore.setAttendance(Math.round((float) attendCount.get() / period * 100));
 
             studentScore.setTotal((float) ((studentScore.getAttendance() * 0.2) + (studentScore.getHomework() * 0.4) + (studentScore.getLecture() * 0.4)));
         } catch (Exception e) {

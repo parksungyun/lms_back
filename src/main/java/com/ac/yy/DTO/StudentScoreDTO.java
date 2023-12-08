@@ -12,9 +12,9 @@ import java.util.List;
 @Getter
 public class StudentScoreDTO {
     private CourseEntity course;
-    private int lecture;
-    private int homework;
-    private int attendance;
+    private float lecture;
+    private float homework;
+    private float attendance;
     private float total;
     private List<StudentSubjectScoreDTO> subjectScore;
 }
