@@ -10,4 +10,6 @@ import java.util.List;
 public interface CourseQuestionRepository extends JpaRepository<CourseQuestionEntity, Integer> {
     List<CourseQuestionEntity> findByCourseIdOrderByRegDateDesc(int courseId);
     List<CourseQuestionEntity> findByStudentIdOrderByRegDateDesc(int studentId);
+    List<CourseQuestionEntity> findByTitleContainingOrderByRegDateDesc(String title);
+    List<CourseQuestionEntity> findByContentContainingOrderByRegDateDesc(String content);
 }

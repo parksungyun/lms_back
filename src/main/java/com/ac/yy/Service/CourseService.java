@@ -25,6 +25,7 @@ public class CourseService {
     @Autowired CourseReviewRepository courseReviewRepository;
     @Autowired SubjectRepository subjectRepository;
     @Autowired AcademicRepository academicRepository;
+    @Autowired UserRepository userRepository;
     public ResponseDTO<?> getCourseById(int id) {
         CourseEntity course = null;
 
@@ -303,5 +304,141 @@ public class CourseService {
             return ResponseDTO.setFailed("Database Error");
         }
         return ResponseDTO.setSuccess("Course Load Success!", course);
+    }
+
+    public ResponseDTO<?> writeBoard(CourseBoardWriteDTO dto) {
+        try {
+            CourseBoardEntity post = new CourseBoardEntity(dto);
+            courseBoardRepository.save(post);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Write Course Board Success!", null);
+    }
+
+    public ResponseDTO<?> writeBoard(int id, CourseBoardWriteDTO dto) {
+        try {
+            if(courseBoardRepository.existsById(id)) {
+                CourseBoardEntity post = courseBoardRepository.findById(id).get();
+                post.setTitle(dto.getTitle());
+                post.setContent(dto.getContent());
+                courseBoardRepository.save(post);
+            }
+            else {
+                return ResponseDTO.setFailed("It doesn't exist post.");
+            }
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Modify Course Board Success!", null);
+    }
+
+    public ResponseDTO<?> writeReply(int id, ReplyDTO dto) {
+        CourseAnswerEntity reply = null;
+        try {
+            if(courseAnswerRepository.existsById(id)) {
+                reply = courseAnswerRepository.findById(id).get();
+                reply.setAnswerContent(dto.getContent());
+                courseAnswerRepository.save(reply);
+            }
+            else {
+                reply = new CourseAnswerEntity(dto);
+                reply.setCourseQuestionId(id);
+                courseAnswerRepository.save(reply);
+            }
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Write Reply Success!", null);
+    }
+
+    public ResponseDTO<?> getQnaBySearch(String keyword, int type, int id) {
+        List<CourseQnaDTO> posts = new ArrayList<CourseQnaDTO>();
+        List<CourseQuestionEntity> courseQuestionBySearch = new ArrayList<CourseQuestionEntity>();
+        try {
+            List<CourseQuestionEntity> courseQuestionByCourseId = courseQuestionRepository.findByCourseIdOrderByRegDateDesc(id);
+            // 제목으로 검색
+            if(type == 1 || type == 0) {
+                courseQuestionBySearch = courseQuestionRepository.findByTitleContainingOrderByRegDateDesc(keyword);
+                List<CourseQuestionEntity> temp = courseQuestionBySearch.stream().filter(o -> courseQuestionByCourseId.stream().anyMatch(Predicate.isEqual(o))).collect(Collectors.toList());
+                temp.forEach(data -> {
+                    CourseQnaDTO tempCourseQnaDTO = new CourseQnaDTO();
+                    tempCourseQnaDTO.setQuestion(data);
+                    if(courseAnswerRepository.existsById(data.getCourseQuestionId())) {
+                        tempCourseQnaDTO.setAnswer(courseAnswerRepository.findById(data.getCourseQuestionId()).get());
+                    }
+                    else tempCourseQnaDTO.setAnswer(null);
+                    posts.add(tempCourseQnaDTO);
+                });
+            }
+
+            // 내용으로 검색
+            if(type == 2 || type == 0) {
+                courseQuestionBySearch = courseQuestionRepository.findByContentContainingOrderByRegDateDesc(keyword);
+                List<CourseQuestionEntity> temp = courseQuestionBySearch.stream().filter(o -> courseQuestionByCourseId.stream().anyMatch(Predicate.isEqual(o))).collect(Collectors.toList());
+                temp.forEach(data -> {
+                    CourseQnaDTO tempCourseQnaDTO = new CourseQnaDTO();
+                    tempCourseQnaDTO.setQuestion(data);
+                    if(courseAnswerRepository.existsById(data.getCourseQuestionId())) {
+                        tempCourseQnaDTO.setAnswer(courseAnswerRepository.findById(data.getCourseQuestionId()).get());
+                    }
+                    else tempCourseQnaDTO.setAnswer(null);
+                    posts.add(tempCourseQnaDTO);
+                });
+            }
+
+            // 작성자로 검색
+            if(type == 3 || type == 0) {
+                List<UserEntity> tempUser = userRepository.findByUserNameContaining(keyword);
+                List<StudentDTO> tempStudent = new ArrayList<StudentDTO>();
+                if(!tempUser.isEmpty()) {
+                    tempUser.forEach(data -> {
+                        StudentDTO tempStudentDTO = new StudentDTO();
+                        if(studentRepository.existsByUid(data.getUid())) {
+                            tempStudentDTO.setUser(data);
+                            tempStudentDTO.setStudent(studentRepository.findByUid(data.getUid()).get());
+                            tempStudent.add(tempStudentDTO);
+                        }
+                    });
+                }
+                if(!tempStudent.isEmpty()) {
+                    tempStudent.forEach(data -> {
+                        CourseQnaDTO tempCourseQnaDTO = new CourseQnaDTO();
+                        List<CourseQuestionEntity> tempQuestion = new ArrayList<CourseQuestionEntity>();
+                        tempQuestion = courseQuestionRepository.findByStudentIdOrderByRegDateDesc(data.getStudent().getStudentId());
+
+                        List<CourseQuestionEntity> temp = tempQuestion.stream().filter(o -> courseQuestionByCourseId.stream().anyMatch(Predicate.isEqual(o))).collect(Collectors.toList());
+                        temp.forEach(ques -> {
+                            tempCourseQnaDTO.setQuestion(ques);
+                            if(courseAnswerRepository.existsById(ques.getCourseQuestionId())) {
+                                tempCourseQnaDTO.setAnswer(courseAnswerRepository.findById(ques.getCourseQuestionId()).get());
+                            }
+                            else tempCourseQnaDTO.setAnswer(null);
+                            posts.add(tempCourseQnaDTO);
+                        });
+                    });
+                }
+            }
+
+            if(type == 0) {
+                Collections.sort(posts, (o1, o2) -> o2.getQuestion().getRegDate().compareTo(o1.getQuestion().getRegDate()));
+                Set<CourseQnaDTO> tempPosts = new HashSet<>(posts);
+                List<CourseQnaDTO> result = new ArrayList<>(tempPosts);
+                return ResponseDTO.setSuccess("Searched Course QnA Search Success!", result);
+            }
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Searched Course QnA Search Success!", posts);
+    }
+
+    public ResponseDTO<?> mod(CourseDTO dto, int id) {
+        try {
+            courseRepository.modifyingInfoByCourseId(id, dto.getAcademicId(), dto.getCourseName(), dto.getSubjectNo(), dto.getCapacity(), dto.getStartDate(), dto.getEndDate(), dto.getRecruitStart(), dto.getRecruitEnd(), dto.getCourseInfo());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Course Add Success!", null);
     }
 }

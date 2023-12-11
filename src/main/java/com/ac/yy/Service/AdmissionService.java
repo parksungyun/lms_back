@@ -2,8 +2,11 @@ package com.ac.yy.Service;
 
 import com.ac.yy.DTO.AdmissionPostDTO;
 import com.ac.yy.DTO.AdmissionWriteDTO;
+import com.ac.yy.DTO.ReplyDTO;
 import com.ac.yy.DTO.ResponseDTO;
+import com.ac.yy.Entity.AdmissionAnswerEntity;
 import com.ac.yy.Entity.AdmissionQuestionEntity;
+import com.ac.yy.Entity.CourseAnswerEntity;
 import com.ac.yy.Entity.CourseBoardEntity;
 import com.ac.yy.Repository.AdmissionAnswerRepository;
 import com.ac.yy.Repository.AdmissionQuestionRepository;
@@ -132,5 +135,24 @@ public class AdmissionService {
         }
 
         return ResponseDTO.setSuccess("Admission Question Modify Success!", null);
+    }
+
+    public ResponseDTO<?> writeReply(int id, ReplyDTO dto) {
+        AdmissionAnswerEntity reply = null;
+        try {
+            if(admissionAnswerRepository.existsById(id)) {
+                reply = admissionAnswerRepository.findById(id).get();
+                reply.setAnswerContent(dto.getContent());
+                admissionAnswerRepository.save(reply);
+            }
+            else {
+                reply = new AdmissionAnswerEntity(dto);
+                reply.setAdmissionQuestionId(id);
+                admissionAnswerRepository.save(reply);
+            }
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Write Reply Success!", null);
     }
 }

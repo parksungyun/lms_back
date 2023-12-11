@@ -1,5 +1,6 @@
 package com.ac.yy.Entity;
 
+import com.ac.yy.DTO.ReplyDTO;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -31,4 +32,9 @@ public class SubjectAnswerEntity {
     @Column(name = "answer_mod_date")
     @UpdateTimestamp
     private LocalDateTime answerModDate;
+
+    public SubjectAnswerEntity(ReplyDTO dto) {
+        this.academicId = dto.getAcademicId();
+        this.answerContent = dto.getContent();
+    }
 }
