@@ -4,12 +4,11 @@ import com.ac.yy.DTO.*;
 import com.ac.yy.Entity.*;
 import com.ac.yy.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.web.server.authentication.AnonymousAuthenticationWebFilter;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.Period;
+import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -539,13 +538,12 @@ public class UserService {
         try {
             List<AttendanceEntity> temp = new ArrayList<AttendanceEntity>();
 
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-            Date start = formatter.parse(startDate);
-            Date end = formatter.parse(endDate);
+            LocalDate start = LocalDate.parse(startDate);
+            LocalDate end = LocalDate.parse(endDate);
 
             temp = attendanceRepository.findByStudentIdOrderByAttendDateDesc(id);
             temp.forEach(data -> {
-                if(((data.getAttendDate()).compareTo(start) >= 0) && ((data.getAttendDate()).compareTo(end) <= 0)) {
+                if((!(data.getAttendDate()).isBefore(start)) && (!(data.getAttendDate()).isAfter(end))) {
                     attendance.add(data);
                 }
             });
@@ -558,13 +556,12 @@ public class UserService {
     public ResponseDTO<?> getStudentAttendanceByStudentId(int id, int code, String startDate, String endDate) {
         List<AttendanceEntity> attendance = new ArrayList<AttendanceEntity>();
         try {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-            Date start = formatter.parse(startDate);
-            Date end = formatter.parse(endDate);
+            LocalDate start = LocalDate.parse(startDate);
+            LocalDate end = LocalDate.parse(endDate);
 
             List<AttendanceEntity> temp = attendanceRepository.findByStudentIdAndAbsenceIdOrderByAttendDateDesc(id, code);
             temp.forEach(data -> {
-                if(((data.getAttendDate()).compareTo(start) >= 0) && ((data.getAttendDate()).compareTo(end) <= 0)) {
+                if((!(data.getAttendDate()).isBefore(start)) && (!(data.getAttendDate()).isAfter(end))) {
                     attendance.add(data);
                 }
             });
@@ -572,5 +569,43 @@ public class UserService {
             return ResponseDTO.setFailed("Database Error");
         }
         return ResponseDTO.setSuccess("Student Attendance Load Success!", attendance);
+    }
+
+    public ResponseDTO<?> attend(int id) {
+        LocalDate now = LocalDate.now();
+        LocalDateTime nowTime = LocalDateTime.now();
+        LocalTime attendStart = LocalTime.of(8, 0);
+        LocalTime attendEnd = LocalTime.of(9, 0);
+        LocalTime leaveStart = LocalTime.of(17, 0);
+        LocalTime leaveEnd = LocalTime.of(18, 0);
+        try {
+            if(attendanceRepository.existsByStudentIdAndAttendDate(id, now)) {
+                AttendanceEntity attend = attendanceRepository.findByStudentIdAndAttendDate(id, now).get();
+                attend.setLeaveTime(nowTime);
+                if((!attend.getAttendTime().toLocalTime().isBefore(attendStart)) && (!attend.getAttendTime().toLocalTime().isAfter(attendEnd))) {
+                    if((!attend.getLeaveTime().toLocalTime().isBefore(leaveStart)) &&  (!attend.getLeaveTime().toLocalTime().isAfter(leaveEnd))) {
+                        attend.setAbsenceId(0);
+                    }
+                    else {
+                        attend.setAbsenceId(99);
+                    }
+                }
+                else {
+                    attend.setAbsenceId(99);
+                }
+                attendanceRepository.save(attend);
+            }
+            else {
+                AttendanceEntity attend = new AttendanceEntity();
+                attend.setAttendDate(now);
+                attend.setStudentId(id);
+                attend.setAttendTime(nowTime);
+                attend.setAbsenceId(99);
+                attendanceRepository.save(attend);
+            }
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Attend Check Success!", null);
     }
 }

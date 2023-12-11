@@ -166,4 +166,11 @@ public class UserController {
         ResponseDTO<?> result = userService.getStudentAttendanceByStudentId(id, code, start, end);
         return result;
     }
+
+    // 출석
+    @GetMapping("/student/{id}/attend")
+    public ResponseDTO<?> attend(@PathVariable("id") int id) {
+        ResponseDTO<?> result = userService.attend(id);
+        return result;
+    }
 }
