@@ -719,4 +719,95 @@ public class SubjectService {
         }
         return ResponseDTO.setSuccess("Subject Add Success!", subjects);
     }
+
+    public ResponseDTO<?> writeBoard(SubjectBoardWriteDTO dto) {
+        try {
+            SubjectBoardEntity post = new SubjectBoardEntity(dto);
+            subjectBoardRepository.save(post);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Write Subject Board Success!", null);
+    }
+
+    public ResponseDTO<?> writeBoard(int id, SubjectBoardWriteDTO dto) {
+        try {
+            if(subjectBoardRepository.existsById(id)) {
+                SubjectBoardEntity post = subjectBoardRepository.findById(id).get();
+                post.setTitle(dto.getTitle());
+                post.setContent(dto.getContent());
+                subjectBoardRepository.save(post);
+            }
+            else {
+                return ResponseDTO.setFailed("It doesn't exist post.");
+            }
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Modify Subject Board Success!", null);
+    }
+
+    public ResponseDTO<?> writeReply(int id, ReplyDTO dto) {
+        SubjectAnswerEntity reply = null;
+        try {
+            if(subjectAnswerRepository.existsById(id)) {
+                reply = subjectAnswerRepository.findById(id).get();
+                reply.setAnswerContent(dto.getContent());
+                subjectAnswerRepository.save(reply);
+            }
+            else {
+                reply = new SubjectAnswerEntity(dto);
+                reply.setSubjectQuestionId(id);
+                subjectAnswerRepository.save(reply);
+            }
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Write Reply Success!", null);
+    }
+
+
+    public ResponseDTO<?> mod(List<SubjectAddDTO> subjects, int id, int check) {
+        List<SubjectEntity> subjectEntity = new ArrayList<SubjectEntity>();
+        try {
+            if (check == 0) {
+                List<SubjectEntity> temp = subjectRepository.findByCourseId(id);
+                ListIterator<SubjectEntity> it = temp.listIterator();
+                while (it.hasNext()) {
+                    subjectRepository.deleteById(it.next().getSubjectId());
+                }
+                subjects.forEach(sub -> {
+                    CourseEntity course = courseRepository.findById(id).get();
+                    SubjectEntity subject = new SubjectEntity();
+                    subject.setCourseId(course.getCourseId());
+                    subject.setSubjectName(sub.getSubjectName());
+                    subject.setAcademicId(sub.getAcademicId());
+                    subjectEntity.add(subject);
+                });
+                System.out.println(subjectEntity);
+                subjectRepository.saveAll(subjectEntity);
+            } else if (check == 1) {
+                CourseEntity course = courseRepository.findById(id).get();
+                ListIterator<SubjectAddDTO> sub = subjects.listIterator();
+                List<SubjectEntity> temp = subjectRepository.findByCourseId(id);
+                SubjectEntity subject = new SubjectEntity();
+                for (int i = 0; i < subjects.size(); i++) {
+                    if (i >= temp.size()) {
+                        subject.setCourseId(course.getCourseId());
+                        subject.setSubjectName(subjects.get(i).getSubjectName());
+                        subject.setAcademicId(subjects.get(i).getAcademicId());
+                        subjectEntity.add(subject);
+                    } else {
+                        subjectRepository.modifyingSubjectBySubjectId(temp.get(i).getSubjectId(), subjects.get(i).getSubjectName(), subjects.get(i).getAcademicId());
+                    }
+                }
+                ;
+                subjectRepository.saveAll(subjectEntity);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Subject Add Success!", subjects);
+    }
 }

@@ -325,10 +325,31 @@ public class SubjectController {
     }
 
     //admin course에서 subject 수정
-//    @PostMapping("/mod/{id}/{check}")
-//    public ResponseDTO<?> mod(@RequestBody List<SubjectAddDTO> subjects, @PathVariable("id") int id, @PathVariable("check") int check) {
-//        System.out.println(subjects);
-//        ResponseDTO<?> result = subjectService.mod(subjects, id, check);
-//        return result;
-//    }
+    @PostMapping("/mod/{id}/{check}")
+    public ResponseDTO<?> mod(@RequestBody List<SubjectAddDTO> subjects, @PathVariable("id") int id, @PathVariable("check") int check) {
+        System.out.println(subjects);
+        ResponseDTO<?> result = subjectService.mod(subjects, id, check);
+        return result;
+    }
+
+    // 과목 공지사항 작성
+    @PostMapping("/board/write")
+    public ResponseDTO<?> writeBoard(@RequestBody SubjectBoardWriteDTO dto) {
+        ResponseDTO<?> result = subjectService.writeBoard(dto);
+        return result;
+    }
+
+    // 과목 공지사항 수정
+    @PostMapping("/board/{id}/mod")
+    public ResponseDTO<?> writeBoard(@PathVariable("id") int id, @RequestBody SubjectBoardWriteDTO dto) {
+        ResponseDTO<?> result = subjectService.writeBoard(id, dto);
+        return result;
+    }
+
+    // 과목 QnA 답변 작성/수정
+    @PostMapping("/qna/{id}/reply")
+    public ResponseDTO<?> writeReply(@PathVariable("id") int id, @RequestBody ReplyDTO dto) {
+        ResponseDTO<?> result = subjectService.writeReply(id, dto);
+        return result;
+    }
 }

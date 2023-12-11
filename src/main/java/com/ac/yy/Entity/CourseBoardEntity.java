@@ -1,12 +1,12 @@
 package com.ac.yy.Entity;
 
+import com.ac.yy.DTO.CourseBoardWriteDTO;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Data
 @AllArgsConstructor
@@ -47,4 +47,11 @@ public class CourseBoardEntity {
     @Column(name = "mod_date")
     @UpdateTimestamp
     private LocalDateTime modDate;
+
+    public CourseBoardEntity(CourseBoardWriteDTO dto) {
+        this.courseId = dto.getCourseId();
+        this.academicId = dto.getAcademicId();
+        this.title = dto.getTitle();
+        this.content = dto.getContent();
+    }
 }

@@ -1,6 +1,7 @@
 package com.ac.yy.Controller;
 
 import com.ac.yy.DTO.AdmissionWriteDTO;
+import com.ac.yy.DTO.ReplyDTO;
 import com.ac.yy.DTO.ResponseDTO;
 import com.ac.yy.Entity.AdmissionQuestionEntity;
 import com.ac.yy.Service.AdmissionService;
@@ -60,6 +61,13 @@ public class AdmissionController {
     public ResponseDTO<?> modAdmissionQuestion(@PathVariable int postId, @RequestBody AdmissionWriteDTO requestBody) {
         System.out.println(requestBody.toString());
         ResponseDTO<?> result = admissionService.modAdmissionQuestion(postId, requestBody);
+        return result;
+    }
+
+    // 입학 상담 답변 작성/수정
+    @PostMapping("/{id}/reply")
+    public ResponseDTO<?> writeReply(@PathVariable("id") int id, @RequestBody ReplyDTO dto) {
+        ResponseDTO<?> result = admissionService.writeReply(id, dto);
         return result;
     }
 }

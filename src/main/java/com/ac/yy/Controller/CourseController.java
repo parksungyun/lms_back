@@ -89,21 +89,21 @@ public class CourseController {
         return result;
     }
 
-    // 과목 공지 검색(제목 + 내용)
+    // 과정 공지 검색(제목 + 내용)
     @GetMapping("/{id}/board/search/all/{keyword}")
     public ResponseDTO<?> getBoardBySearchAll(@PathVariable("keyword") String keyword, @PathVariable("id") int id) {
         ResponseDTO<?> result = courseService.getBoardBySearch(keyword, 0, id);
         return result;
     }
 
-    // 과목 공지 검색(제목)
+    // 과정 공지 검색(제목)
     @GetMapping("/{id}/board/search/title/{keyword}")
     public ResponseDTO<?> getBoardBySearchTitle(@PathVariable("keyword") String keyword, @PathVariable("id") int id) {
         ResponseDTO<?> result = courseService.getBoardBySearch(keyword, 1, id);
         return result;
     }
 
-    // 과목 공지 검색(내용)
+    // 과정 공지 검색(내용)
     @GetMapping("/{id}/board/search/content/{keyword}")
     public ResponseDTO<?> getBoardBySearchContent(@PathVariable("keyword") String keyword, @PathVariable("id") int id) {
         ResponseDTO<?> result = courseService.getBoardBySearch(keyword, 2, id);
@@ -149,6 +149,69 @@ public class CourseController {
     @PostMapping("/add")
     public ResponseDTO<?> add(@RequestBody CourseDTO dto) {
         ResponseDTO<?> result = courseService.add(dto);
+        return result;
+    }
+
+    // Admin에서 Course 수정
+    @PostMapping("/mod/{id}")
+    public ResponseDTO<?> mod(@RequestBody CourseDTO dto, @PathVariable("id") int id) {
+        ResponseDTO<?> result = courseService.mod(dto, id);
+        return result;
+    }
+
+    // 학생으로 과정 정보 불러오기
+    @GetMapping("/student/{id}")
+    public ResponseDTO<?> getCourseByStudentId(@PathVariable("id") int id) {
+        ResponseDTO<?> result = courseService.getCourseByStudentId(id);
+        return result;
+    }
+
+    // 과정 공지사항 작성
+    @PostMapping("/board/write")
+    public ResponseDTO<?> writeBoard(@RequestBody CourseBoardWriteDTO dto) {
+        ResponseDTO<?> result = courseService.writeBoard(dto);
+        return result;
+    }
+
+    // 과정 공지사항 수정
+    @PostMapping("/board/{id}/mod")
+    public ResponseDTO<?> writeBoard(@PathVariable("id") int id, @RequestBody CourseBoardWriteDTO dto) {
+        ResponseDTO<?> result = courseService.writeBoard(id, dto);
+        return result;
+    }
+
+    // 과정 QnA 답변 작성/수정
+    @PostMapping("/qna/{id}/reply")
+    public ResponseDTO<?> writeReply(@PathVariable("id") int id, @RequestBody ReplyDTO dto) {
+        ResponseDTO<?> result = courseService.writeReply(id, dto);
+        return result;
+    }
+
+    // 과정 QnA 검색(제목 + 내용 + 작성자)
+    @GetMapping("/{id}/qna/search/all/{keyword}")
+    public ResponseDTO<?> getQnaBySearchAll(@PathVariable("keyword") String keyword, @PathVariable("id") int id) {
+        ResponseDTO<?> result = courseService.getQnaBySearch(keyword, 0, id);
+        return result;
+    }
+
+    // 과정 QnA 검색(제목)
+    @GetMapping("/{id}/qna/search/title/{keyword}")
+    public ResponseDTO<?> getQnaBySearchTitle(@PathVariable("keyword") String keyword, @PathVariable("id") int id) {
+        ResponseDTO<?> result = courseService.getQnaBySearch(keyword, 1, id);
+        return result;
+    }
+
+    // 과정 QnA 검색(내용)
+    @GetMapping("/{id}/qna/search/content/{keyword}")
+    public ResponseDTO<?> getQnaBySearchContent(@PathVariable("keyword") String keyword, @PathVariable("id") int id) {
+        ResponseDTO<?> result = courseService.getQnaBySearch(keyword, 2, id);
+        return result;
+    }
+
+    // 과정 QnA 검색(작성자)
+    @GetMapping("/{id}/qna/search/writer/{keyword}")
+    public ResponseDTO<?> getQnaBySearchWriter(@PathVariable("keyword") String keyword, @PathVariable("id") int id) {
+        ResponseDTO<?> result = courseService.getQnaBySearch(keyword, 3, id);
         return result;
     }
 }
