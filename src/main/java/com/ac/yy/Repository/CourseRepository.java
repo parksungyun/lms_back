@@ -19,5 +19,10 @@ public interface CourseRepository extends JpaRepository<CourseEntity, Integer> {
     @Transactional
     @Modifying
     @Query(value = "UPDATE courses SET courses.course_photo=?2 WHERE courses.course_id=?1", nativeQuery = true)
-    int modifyingPhotoByCourseId(int id, String filepath);
+    int modifyingPhotoByCourseId(int courseId, String filepath);
+
+    @Transactional
+    @Modifying
+    @Query(value = "UPDATE courses SET courses.course_info=?10, courses.recruit_end=?9, courses.recruit_start=?8, courses.end_date=?7, courses.start_date=?6 ,courses.capacity=?5, courses.subject_no=?4, courses.course_name=?3, courses.academic_id=?2 WHERE courses.course_id=?1", nativeQuery = true)
+    int modifyingInfoByCourseId(int courseId, int academicId, String name, int subjectNo, int capacity, String startDate, String endDate, String recruitStart, String recruitEnd, String courseInfo);
 }
