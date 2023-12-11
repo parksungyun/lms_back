@@ -3,8 +3,9 @@ package com.ac.yy.Entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,7 +21,7 @@ public class AttendanceEntity {
     private int studentId;
 
     @Column(name = "attend_date")
-    private Date attendDate;
+    private LocalDate attendDate;
 
     @Column(name = "attend_time")
     private LocalDateTime attendTime;
