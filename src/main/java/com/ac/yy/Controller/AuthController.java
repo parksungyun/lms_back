@@ -60,6 +60,13 @@ public class AuthController {
         return result;
     }
 
+    //비밀번호 변경
+    @PostMapping("/{id}/changePW")
+    public ResponseDTO<?> changePW(@PathVariable("id") int id, @RequestBody ChangePwDTO dto){
+        ResponseDTO<?> result = authService.changePW(id, dto);
+        return result;
+    }
+
     //비밀번호 초기화
     @GetMapping("/{id}/resetPW")
     public ResponseDTO<?> resetPW(@PathVariable("id") int id){

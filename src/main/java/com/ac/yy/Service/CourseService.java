@@ -293,4 +293,15 @@ public class CourseService {
         }
         return ResponseDTO.setSuccess("Course Add Success!", result);
     }
+
+    public ResponseDTO<?> getCourseByStudentId(int id) {
+        CourseEntity course = null;
+        try {
+            StudentEntity student = studentRepository.findByStudentId(id).get();
+            course = courseRepository.findById(student.getCourseId()).get();
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Course Load Success!", course);
+    }
 }

@@ -486,7 +486,6 @@ public class UserService {
             int period = 0;
             for (int i = 0; i <= days; i++) {
                 DayOfWeek day = temp.getDayOfWeek();
-                System.out.println(day);
                 int number = day.getValue();
                 if(number != 6 && number != 7) {
                     period++;
@@ -511,7 +510,7 @@ public class UserService {
         return ResponseDTO.setSuccess("Student's score Load Success!", studentScore);
     }
 
-    public ResponseDTO<?> studentadd(int userUid, int id) {
+    public ResponseDTO<?> studentAdd(int userUid, int id) {
         try {
             StudentEntity student = new StudentEntity();
             student.setUid(userUid);
@@ -523,5 +522,55 @@ public class UserService {
             return ResponseDTO.setFailed("Database Error");
         }
         return ResponseDTO.setSuccess("Student Add Success!", null);
+    }
+
+    public ResponseDTO<?> getStudentAttendanceByStudentId(int id, int code) {
+        List<AttendanceEntity> attendance = new ArrayList<AttendanceEntity>();
+        try {
+            attendance = attendanceRepository.findByStudentIdAndAbsenceIdOrderByAttendDateDesc(id, code);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Student Attendance Load Success!", attendance);
+    }
+
+    public ResponseDTO<?> getStudentAttendanceByStudentId(int id, String startDate, String endDate) {
+        List<AttendanceEntity> attendance = new ArrayList<AttendanceEntity>();
+        try {
+            List<AttendanceEntity> temp = new ArrayList<AttendanceEntity>();
+
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            Date start = formatter.parse(startDate);
+            Date end = formatter.parse(endDate);
+
+            temp = attendanceRepository.findByStudentIdOrderByAttendDateDesc(id);
+            temp.forEach(data -> {
+                if(((data.getAttendDate()).compareTo(start) >= 0) && ((data.getAttendDate()).compareTo(end) <= 0)) {
+                    attendance.add(data);
+                }
+            });
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Student Attendance Load Success!", attendance);
+    }
+
+    public ResponseDTO<?> getStudentAttendanceByStudentId(int id, int code, String startDate, String endDate) {
+        List<AttendanceEntity> attendance = new ArrayList<AttendanceEntity>();
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            Date start = formatter.parse(startDate);
+            Date end = formatter.parse(endDate);
+
+            List<AttendanceEntity> temp = attendanceRepository.findByStudentIdAndAbsenceIdOrderByAttendDateDesc(id, code);
+            temp.forEach(data -> {
+                if(((data.getAttendDate()).compareTo(start) >= 0) && ((data.getAttendDate()).compareTo(end) <= 0)) {
+                    attendance.add(data);
+                }
+            });
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Student Attendance Load Success!", attendance);
     }
 }

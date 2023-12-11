@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface AttendanceRepository extends JpaRepository<AttendanceEntity, Integer> {
     List<AttendanceEntity> findByStudentIdOrderByAttendDateDesc(int studentId);
-    List<AttendanceEntity> findByStudentIdAndAbsenceId(int studentId, int absenceId);
+    List<AttendanceEntity> findByStudentIdAndAbsenceIdOrderByAttendDateDesc(int studentId, int absenceId);
 }
