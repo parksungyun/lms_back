@@ -11,5 +11,6 @@ import java.util.Optional;
 public interface StudyRepository extends JpaRepository<StudyEntity, Integer> {
     public boolean existsByStudentIdAndLectureId(int studentId, int lectureId);
     Optional<StudyEntity> findByStudentIdAndLectureId(int studentId, int lectureId);
+    List<StudyEntity> findByLectureId(int lectureId);
     List<StudyEntity> findByStudentId(int studentId);
 }
