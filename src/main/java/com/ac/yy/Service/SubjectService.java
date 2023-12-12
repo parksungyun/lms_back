@@ -340,8 +340,10 @@ public class SubjectService {
             if(studyRepository.existsByStudentIdAndLectureId(dto.getStudentId(), dto.getLectureId())) {
                 StudyEntity temp = studyRepository.findByStudentIdAndLectureId(dto.getStudentId(), dto.getLectureId()).get();
                 LectureEntity lecture = lectureRepository.findById(dto.getLectureId()).get();
+                studyRepository.modifyingProgressTimebyStudyId(temp.getStudyId(), dto.getProgressTime());
                 if(lecture.getLectureTime() <= dto.getProgressTime()) {
                     temp.setIsStudy(1);
+                    studyRepository.modifyingIsStudybyStudyId(temp.getLectureId(), temp.getIsStudy());
                 }
             }
             else {
