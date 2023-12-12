@@ -462,6 +462,54 @@ public class SubjectService {
         return ResponseDTO.setSuccess("Study Load Success!", studyEntity);
     }
 
+    public ResponseDTO<?> getStudyBySubjectId(int subjectId) {
+        List<StudyEntity> studyEntityList = new ArrayList<StudyEntity>();
+        try {
+            List<LectureEntity> lectures = lectureRepository.findBySubjectId(subjectId);
+            lectures.forEach(data -> {
+                studyEntityList.addAll(studyRepository.findByLectureId(data.getLectureId()));
+            });
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Study Load Success!", studyEntityList);
+    }
+
+    public ResponseDTO<?> getStudyByLectureId(int lectureId) {
+        List<StudyEntity> studyEntityList;
+        try {
+            studyEntityList = new ArrayList<StudyEntity>(studyRepository.findByLectureId(lectureId));
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Study Load Success!", studyEntityList);
+    }
+
+    public ResponseDTO<?> getSubmitsBySubjectId(int subjectId) {
+        List<SubmitDTO> submitDTO = new ArrayList<SubmitDTO>();
+        List<SubmitEntity> temp = new ArrayList<SubmitEntity>();
+        try {
+            List<HomeworkEntity> homeworks = homeworkRepository.findBySubjectIdOrderByStartDateDesc(subjectId);
+            homeworks.forEach(data -> {
+                temp.addAll(submitRepository.findByHomeworkId(data.getHomeworkId()));
+            });
+            temp.forEach(data -> {
+                SubmitDTO tempSubmitDTO = new SubmitDTO();
+                tempSubmitDTO.setSubmit(data);
+                if(feedbackRepository.existsById(data.getSubmitId())) {
+                    tempSubmitDTO.setFeedback(feedbackRepository.findById(data.getSubmitId()).get());
+                }
+                else {
+                    tempSubmitDTO.setFeedback(null);
+                }
+                submitDTO.add(tempSubmitDTO);
+            });
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Submits Load Success!", submitDTO);
+    }
+
     public ResponseDTO<?> getSubmitsByStudentIdAndSubjectId(int studentId, int subjectId) {
         List<SubmitDTO> submitDTO = new ArrayList<SubmitDTO>();
         List<SubmitEntity> temp = new ArrayList<SubmitEntity>();

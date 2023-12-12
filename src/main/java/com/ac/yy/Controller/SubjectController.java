@@ -177,6 +177,13 @@ public class SubjectController {
         return result;
     }
 
+    // 과목의 모든 과제의 모든 제출 확인
+    @GetMapping("/{subjectId}/submits")
+    public ResponseDTO<?> getSubmitsBySubjectId(@PathVariable("subjectId") int id) {
+        ResponseDTO<?> result = subjectService.getSubmitsBySubjectId(id);
+        return result;
+    }
+
     // 과제 제출에 대한 피드백 작성
     @PostMapping(value = "/feedback")
     public ResponseDTO<?> feedbackSubmit(@RequestBody FeedbackWriteDTO requestBody) {
@@ -216,6 +223,20 @@ public class SubjectController {
     @GetMapping("/study/{lectureId}/{studentId}")
     public ResponseDTO<?> getStudyByStudentIdAndLectureId(@PathVariable("studentId") int studentId, @PathVariable("lectureId") int lectureId) {
         ResponseDTO<?> result = subjectService.getStudyByStudentIdAndLectureId(studentId, lectureId);
+        return result;
+    }
+
+    // 과목으로 강의에 대한 강의 학습 정보 불러오기
+    @GetMapping("/{subjectId}/study")
+    public ResponseDTO<?> getStudyBySubjectId(@PathVariable("subjectId") int subjectId) {
+        ResponseDTO<?> result = subjectService.getStudyBySubjectId(subjectId);
+        return result;
+    }
+
+    // 강의에 대한 강의 학습 정보 불러오기
+    @GetMapping("/study/{lectureId}")
+    public ResponseDTO<?> getStudyByLectureId(@PathVariable("lectureId") int lectureId) {
+        ResponseDTO<?> result = subjectService.getStudyByLectureId(lectureId);
         return result;
     }
 
