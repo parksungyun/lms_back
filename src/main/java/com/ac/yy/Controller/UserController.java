@@ -1,8 +1,6 @@
 package com.ac.yy.Controller;
 
-import com.ac.yy.DTO.AcademicAdminDTO;
-import com.ac.yy.DTO.ResponseDTO;
-import com.ac.yy.DTO.StudentUpdateDTO;
+import com.ac.yy.DTO.*;
 import com.ac.yy.Service.UserService;
 import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +68,7 @@ public class UserController {
     }
 
     //user에 uid로 상태 활성화 비활성화
-    @GetMapping("/{id}/changeAvailable/{value}")
+    @PostMapping("/{id}/changeAvailable/{value}")
     public ResponseDTO<?> changeAvailable(@PathVariable("id") int id, @PathVariable("value") int value) {
         ResponseDTO<?> result = userService.changeAvailable(id, value);
         return result;
@@ -83,6 +81,7 @@ public class UserController {
         return result;
     }
 
+    // admin이 강사, 매니저 등록
     @PostMapping("/academic/add")
     public ResponseDTO<?> add(@RequestBody AcademicAdminDTO dto) {
         ResponseDTO<?> result = userService.add(dto);
@@ -171,6 +170,20 @@ public class UserController {
     @GetMapping("/student/{id}/attend")
     public ResponseDTO<?> attend(@PathVariable("id") int id) {
         ResponseDTO<?> result = userService.attend(id);
+        return result;
+    }
+
+    // 매니저가 학생 정보 수정
+    @PostMapping("/student/mod")
+    public ResponseDTO<?> mod(@RequestBody StudentAdminDTO dto) {
+        ResponseDTO<?> result = userService.mod(dto);
+        return result;
+    }
+
+    // 강사, 매니저 개인정보 수정
+    @PostMapping("/academic/{uid}/update")
+    public ResponseDTO<?> academicUpdate(@PathVariable("uid") int id, @RequestBody AcademicUpdateDTO dto) {
+        ResponseDTO<?> result = userService.academicUpdate(id, dto);
         return result;
     }
 }
