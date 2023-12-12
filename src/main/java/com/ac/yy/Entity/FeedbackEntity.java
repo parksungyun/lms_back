@@ -37,7 +37,6 @@ public class FeedbackEntity {
     private LocalDateTime feedbackModDate;
 
     public FeedbackEntity(FeedbackWriteDTO dto) {
-        this.submitId = dto.getSubmitId();
         this.hwScore = dto.getHwScore();
         this.hwComment = dto.getHwComment();
         this.academicId = dto.getAcademicId();

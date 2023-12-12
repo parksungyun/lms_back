@@ -318,15 +318,17 @@ public class SubjectService {
         return ResponseDTO.setSuccess("Submit Load Success!", submitDTO);
     }
 
-    public ResponseDTO<?> feedbackSubmit(FeedbackWriteDTO dto) {
+    public ResponseDTO<?> writeFeedback(int id, FeedbackWriteDTO dto) {
         try {
-            if(feedbackRepository.existsById(dto.getSubmitId())) {
-                FeedbackEntity temp = feedbackRepository.findById(dto.getSubmitId()).get();
+            if(feedbackRepository.existsById(id)) {
+                FeedbackEntity temp = feedbackRepository.findById(id).get();
                 temp.setHwScore(dto.getHwScore());
                 temp.setHwComment(dto.getHwComment());
+                feedbackRepository.save(temp);
             }
             else {
                 FeedbackEntity feedbackEntity = new FeedbackEntity(dto);
+                feedbackEntity.setSubmitId(id);
                 feedbackRepository.save(feedbackEntity);
             }
         } catch (Exception e) {
@@ -870,8 +872,32 @@ public class SubjectService {
         }
         catch (Exception e) {
             e.printStackTrace();
-            ResponseDTO.setFailed("Database Error");
+            return ResponseDTO.setFailed("Database Error");
         }
         return ResponseDTO.setSuccess("Lecture Write Success!", result);
+    }
+
+    public ResponseDTO<?> writeHomework(HomeworkDTO dto) {
+        try {
+            HomeworkEntity homework = new HomeworkEntity(dto);
+            homeworkRepository.save(homework);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Homework Write Success!", null);
+    }
+
+    public ResponseDTO<?> writeHomework(int id, HomeworkDTO dto) {
+        try {
+            HomeworkEntity homework = homeworkRepository.findById(id).get();
+            homework.setTitle(dto.getTitle());
+            homework.setContent(dto.getContent());
+            homework.setStartDate(dto.getStartDate());
+            homework.setEndDate(dto.getEndDate());
+            homeworkRepository.save(homework);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Homework Write Success!", null);
     }
 }
