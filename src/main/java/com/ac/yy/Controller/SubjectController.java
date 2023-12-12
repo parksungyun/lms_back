@@ -184,10 +184,10 @@ public class SubjectController {
         return result;
     }
 
-    // 과제 제출에 대한 피드백 작성
-    @PostMapping(value = "/feedback")
-    public ResponseDTO<?> feedbackSubmit(@RequestBody FeedbackWriteDTO requestBody) {
-        ResponseDTO<?> result = subjectService.feedbackSubmit(requestBody);
+    // 과제 제출에 대한 피드백 작성/수정
+    @PostMapping(value = "/{id}/feedback")
+    public ResponseDTO<?> writeFeedback(@PathVariable("id") int id, @RequestBody FeedbackWriteDTO requestBody) {
+        ResponseDTO<?> result = subjectService.writeFeedback(id, requestBody);
         return result;
     }
 
@@ -379,6 +379,20 @@ public class SubjectController {
     @PostMapping("/{state}/lecture/write")
     public ResponseDTO<?> writeLecture(@PathVariable("state") int subjectId, @RequestBody LectureDTO dto) {
         ResponseDTO<?> result = subjectService.writeLecture(subjectId, dto);
+        return result;
+    }
+
+    // 강사가 과제 작성
+    @PostMapping("/homework/write")
+    public ResponseDTO<?> writeHomework(@RequestBody HomeworkDTO dto) {
+        ResponseDTO<?> result = subjectService.writeHomework(dto);
+        return result;
+    }
+
+    // 강사가 과제 수정
+    @PostMapping("/homework/{id}/mod")
+    public ResponseDTO<?> writeHomework(@PathVariable("id") int id, @RequestBody HomeworkDTO dto) {
+        ResponseDTO<?> result = subjectService.writeHomework(id, dto);
         return result;
     }
 }

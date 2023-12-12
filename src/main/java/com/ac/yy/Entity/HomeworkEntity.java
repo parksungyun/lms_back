@@ -1,5 +1,6 @@
 package com.ac.yy.Entity;
 
+import com.ac.yy.DTO.HomeworkDTO;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -15,6 +16,7 @@ import java.util.Date;
 @Table(name = "homeworks")
 public class HomeworkEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "homework_id")
     private int homeworkId;
 
@@ -49,4 +51,13 @@ public class HomeworkEntity {
     @Column(name = "mod_date")
     @UpdateTimestamp
     private LocalDateTime modDate;
+
+    public HomeworkEntity(HomeworkDTO dto) {
+        this.title = dto.getTitle();
+        this.content = dto.getContent();
+        this.academicId = dto.getAcademicId();
+        this.subjectId = dto.getSubjectId();
+        this.startDate = dto.getStartDate();
+        this.endDate = dto.getEndDate();
+    }
 }
