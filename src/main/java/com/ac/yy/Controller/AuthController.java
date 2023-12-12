@@ -68,7 +68,7 @@ public class AuthController {
     }
 
     //비밀번호 초기화
-    @GetMapping("/{id}/resetPW")
+    @PostMapping("/{id}/resetPW")
     public ResponseDTO<?> resetPW(@PathVariable("id") int id){
         System.out.println(id);
         ResponseDTO<?> result = authService.resetPW(id);

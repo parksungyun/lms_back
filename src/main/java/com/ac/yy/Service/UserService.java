@@ -194,7 +194,15 @@ public class UserService {
         } else {value = 0;}
 
         try {
-            userRepository.modifyingAvailableByUid(id, value);
+            if(academicRepository.existsByUid(id)) {
+                userRepository.modifyingAcademicAvailableByUid(id, value);
+            }
+            else if(studentRepository.existsByUid(id)) {
+                userRepository.modifyingStudentAvailableByUid(id, value);
+            }
+            else {
+                return ResponseDTO.setFailed("invalid uid");
+            }
         } catch (Exception e) {
             return ResponseDTO.setFailed("Database Error");
         }
@@ -607,5 +615,49 @@ public class UserService {
             return ResponseDTO.setFailed("Database Error");
         }
         return ResponseDTO.setSuccess("Attend Check Success!", null);
+    }
+
+    public ResponseDTO<?> mod(StudentAdminDTO dto) {
+        try {
+            UserEntity user = userRepository.findByUid(dto.getUid()).get();
+            if(!dto.getUserName().isEmpty()) {
+                user.setUserName(dto.getUserName());
+            }
+            if(!dto.getUserBirth().isEmpty()) {
+                user.setUserBirth(dto.getUserBirth());
+            }
+            if(!dto.getUserPhone().isEmpty()) {
+                user.setUserPhone(dto.getUserPhone());
+            }
+            if(!dto.getUserAddr().isEmpty()) {
+                user.setUserAddr(dto.getUserAddr());
+            }
+            if(!dto.getUserEmail().isEmpty()) {
+                user.setUserEmail(dto.getUserEmail());
+            }
+            userRepository.save(user);
+        }
+        catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Mod Success!", null);
+    }
+
+    public ResponseDTO<?> academicUpdate(int id, AcademicUpdateDTO dto) {
+        try {
+            UserEntity user = userRepository.findByUid(id).get();
+            AcademicEntity academic = academicRepository.findByUid(id).get();
+
+            user.setUserEmail(dto.getUserEmail());
+            user.setUserPhone(dto.getUserPhone());
+            user.setUserAddr(dto.getUserAddr());
+            academic.setRemark(dto.getUserRemark());
+
+            userRepository.save(user);
+            academicRepository.save(academic);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Academic Update Success!", null);
     }
 }
