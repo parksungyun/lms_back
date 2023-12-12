@@ -1,30 +1,30 @@
 package com.ac.yy.Controller;
 
 import com.ac.yy.DTO.ResponseDTO;
+import com.ac.yy.Entity.LectureEntity;
+import com.ac.yy.Repository.LectureRepository;
 import com.ac.yy.Service.FileService;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.core.io.support.ResourceRegion;
 import org.springframework.http.*;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.UriUtils;
 
-import javax.annotation.Resource;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.net.MalformedURLException;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 @RestController
 @RequestMapping(value = "/api/file")
 public class FileController {
     @Autowired
     FileService fileService;
+
+    @Autowired
+    LectureRepository lectureRepository;
 
     @PostMapping("/upload/{id}")
     public ResponseDTO<?> fileUpload(@RequestParam(value = "file", required = false) MultipartFile file, @PathVariable("id") int id) {
@@ -76,4 +76,28 @@ public class FileController {
                 .contentType(MediaTypeFactory.getMediaType(video).orElse(MediaType.APPLICATION_OCTET_STREAM))
                 .body(resourceRegion);
     }
+
+//    @GetMapping("/downloadFile")
+//    public ResponseEntity<UrlResource> downloadBoardFile(@RequestBody String fileurl){
+//        //Body
+//        LectureEntity entity = lectureRepository.findByFileUrl(fileurl).get();
+//        UrlResource resource;
+//        try{
+//            resource = new UrlResource(fileurl);
+//        }catch (MalformedURLException e){
+//            e.getStackTrace();
+//            e.printStackTrace();
+//            throw new RuntimeException("the given URL path is not valid");
+//        }
+//        //Header
+//        String originalFileName = entity.getFileName();
+//        String encodedOriginalFileName = UriUtils.encode(originalFileName, StandardCharsets.UTF_8);
+//
+//        String contentDisposition = "attachment; filename=\"" + encodedOriginalFileName + "\"";
+//
+//        return ResponseEntity
+//                .ok()
+//                .header(HttpHeaders.CONTENT_DISPOSITION,contentDisposition)
+//                .body(resource);
+//    }
 }
