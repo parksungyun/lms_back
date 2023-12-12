@@ -1,5 +1,7 @@
 package com.ac.yy.Entity;
 
+import com.ac.yy.DTO.CourseDTO;
+import com.ac.yy.DTO.LectureDTO;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -15,6 +17,7 @@ import java.util.Date;
 @Table(name = "lectures")
 public class LectureEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "lecture_id")
     private int lectureId;
 
@@ -52,4 +55,11 @@ public class LectureEntity {
     @Column(name = "mod_date")
     @UpdateTimestamp
     private LocalDateTime modDate;
+
+    public LectureEntity(LectureDTO dto) {
+        this.title = dto.getTitle();
+        this.content = dto.getContent();
+        this.lectureTime = dto.getVideoTime();
+        this.academicId = dto.getAcademicId();
+    }
 }

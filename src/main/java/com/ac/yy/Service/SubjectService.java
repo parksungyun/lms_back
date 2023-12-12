@@ -810,4 +810,18 @@ public class SubjectService {
         }
         return ResponseDTO.setSuccess("Subject Add Success!", subjects);
     }
+
+    public ResponseDTO<?> writeLecture(int subjectId, LectureDTO dto) {
+        LectureEntity result = null;
+        try {
+            LectureEntity lecture = new LectureEntity(dto);
+            lecture.setSubjectId(subjectId);
+            result = lectureRepository.save(lecture);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Lecture Write Success!", result);
+    }
 }

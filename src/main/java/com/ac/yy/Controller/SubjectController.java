@@ -4,6 +4,7 @@ import com.ac.yy.DTO.*;
 import com.ac.yy.Entity.SubjectEntity;
 import com.ac.yy.Service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
 
 import javax.security.auth.Subject;
@@ -350,6 +351,13 @@ public class SubjectController {
     @PostMapping("/qna/{id}/reply")
     public ResponseDTO<?> writeReply(@PathVariable("id") int id, @RequestBody ReplyDTO dto) {
         ResponseDTO<?> result = subjectService.writeReply(id, dto);
+        return result;
+    }
+
+    // 강사가 강의 추가
+    @PostMapping("/{state}/lecture/write")
+    public ResponseDTO<?> writeLecture(@PathVariable("state") int subjectId, @RequestBody LectureDTO dto) {
+        ResponseDTO<?> result = subjectService.writeLecture(subjectId, dto);
         return result;
     }
 }
