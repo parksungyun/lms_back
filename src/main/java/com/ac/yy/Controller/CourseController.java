@@ -214,4 +214,25 @@ public class CourseController {
         ResponseDTO<?> result = courseService.getQnaBySearch(keyword, 3, id);
         return result;
     }
+
+    // 과정 공지 삭제
+    @DeleteMapping("/board/{id}/delete")
+    public ResponseDTO<?> deleteBoard(@PathVariable("id") int id) {
+        ResponseDTO<?> result = courseService.deleteBoard(id);
+        return result;
+    }
+
+    // 과정 문의 답변 삭제
+    @DeleteMapping("/qna/reply/{id}/delete")
+    public ResponseDTO<?> deleteReply(@PathVariable("id") int id) {
+        ResponseDTO<?> result = courseService.deleteReply(id);
+        return result;
+    }
+
+    // 과정 문의 삭제
+    @DeleteMapping("/qna/{id}/delete")
+    public ResponseDTO<?> deleteQuestion(@PathVariable("id") int id) {
+        ResponseDTO<?> result = courseService.deleteQuestion(id);
+        return result;
+    }
 }

@@ -219,13 +219,14 @@ public class CourseService {
 
     public ResponseDTO<?> writeCourseQuestion(CourseQuestionWriteDTO dto) {
         CourseQuestionEntity courseQuestionEntity = new CourseQuestionEntity(dto);
+        CourseQuestionEntity result = null;
         try {
             courseQuestionEntity.setCourseId(studentRepository.findByStudentId(dto.getStudentId()).get().getCourseId());
-            courseQuestionRepository.save(courseQuestionEntity);
+            result = courseQuestionRepository.save(courseQuestionEntity);
         } catch (Exception e) {
             return ResponseDTO.setFailed("Database Error");
         }
-        return ResponseDTO.setSuccess("Write Course Question Success!", null);
+        return ResponseDTO.setSuccess("Write Course Question Success!", result);
     }
 
     public ResponseDTO<?> writeCourseQuestion(int id, CourseQuestionWriteDTO dto) {
@@ -237,7 +238,7 @@ public class CourseService {
         } catch (Exception e) {
             return ResponseDTO.setFailed("Database Error");
         }
-        return ResponseDTO.setSuccess("Write Course Question Success!", null);
+        return ResponseDTO.setSuccess("Modify Course Question Success!", null);
     }
 
     public ResponseDTO<?> writeReview(ReviewDTO dto) {
@@ -307,9 +308,10 @@ public class CourseService {
     }
 
     public ResponseDTO<?> writeBoard(CourseBoardWriteDTO dto) {
+        CourseBoardEntity result = null;
         try {
             CourseBoardEntity post = new CourseBoardEntity(dto);
-            courseBoardRepository.save(post);
+            result = courseBoardRepository.save(post);
         } catch (Exception e) {
             return ResponseDTO.setFailed("Database Error");
         }
@@ -440,5 +442,35 @@ public class CourseService {
             return ResponseDTO.setFailed("Database Error");
         }
         return ResponseDTO.setSuccess("Course Add Success!", null);
+    }
+
+    public ResponseDTO<?> deleteBoard(int id) {
+        try {
+            courseBoardRepository.deleteById(id);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Delete Board Success!", null);
+    }
+
+    public ResponseDTO<?> deleteReply(int id) {
+        try {
+            courseAnswerRepository.deleteById(id);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Delete Reply Success!", null);
+    }
+
+    public ResponseDTO<?> deleteQuestion(int id) {
+        try {
+            if(courseAnswerRepository.existsById(id)) {
+                courseAnswerRepository.deleteById(id);
+            }
+            courseQuestionRepository.deleteById(id);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Delete Question Success!", null);
     }
 }

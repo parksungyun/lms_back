@@ -773,13 +773,14 @@ public class SubjectService {
     }
 
     public ResponseDTO<?> writeBoard(SubjectBoardWriteDTO dto) {
+        SubjectBoardEntity result = null;
         try {
             SubjectBoardEntity post = new SubjectBoardEntity(dto);
-            subjectBoardRepository.save(post);
+            result = subjectBoardRepository.save(post);
         } catch (Exception e) {
             return ResponseDTO.setFailed("Database Error");
         }
-        return ResponseDTO.setSuccess("Write Subject Board Success!", null);
+        return ResponseDTO.setSuccess("Write Subject Board Success!", result);
     }
 
     public ResponseDTO<?> writeBoard(int id, SubjectBoardWriteDTO dto) {
@@ -903,12 +904,74 @@ public class SubjectService {
 
     public ResponseDTO<?> modLecture(int lectureId, LectureDTO dto) {
         try {
-            lectureRepository.modifyingInfoByLecturetId(lectureId, dto.getTitle(), dto.getContent(), dto.getVideoTime());
+            lectureRepository.modifyingInfoByLectureId(lectureId, dto.getTitle(), dto.getContent(), dto.getVideoTime());
         }
         catch (Exception e) {
             e.printStackTrace();
             return ResponseDTO.setFailed("Database Error");
         }
         return ResponseDTO.setSuccess("Lecture Mod Success!", null);
+    }
+
+    public ResponseDTO<?> deleteBoard(int id) {
+        try {
+            subjectBoardRepository.deleteById(id);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Delete Board Success!", null);
+    }
+
+    public ResponseDTO<?> deleteLecture(int id) {
+        try {
+            lectureRepository.deleteById(id);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Delete Lecture Success!", null);
+    }
+
+    public ResponseDTO<?> deleteHomework(int id) {
+        try {
+            if(submitRepository.existsByHomeworkId(id)) {
+                List<SubmitEntity> submit = submitRepository.findByHomeworkId(id);
+                List<FeedbackEntity> feedback = new ArrayList<FeedbackEntity>();
+                submit.forEach(data -> {
+                    if(feedbackRepository.existsById(data.getSubmitId())) {
+                        feedback.add(feedbackRepository.findById(data.getSubmitId()).get());
+                    }
+                });
+                submitRepository.deleteAllInBatch(submit);
+                if(!feedback.isEmpty()) {
+                    feedbackRepository.deleteAllInBatch(feedback);
+                }
+            }
+
+            homeworkRepository.deleteById(id);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Delete Homework Success!", null);
+    }
+
+    public ResponseDTO<?> deleteReply(int id) {
+        try {
+            subjectAnswerRepository.deleteById(id);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Delete Reply Success!", null);
+    }
+
+    public ResponseDTO<?> deleteQuestion(int id) {
+        try {
+            if(subjectAnswerRepository.existsById(id)) {
+                subjectAnswerRepository.deleteById(id);
+            }
+            subjectQuestionRepository.deleteById(id);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Delete Question Success!", null);
     }
 }
