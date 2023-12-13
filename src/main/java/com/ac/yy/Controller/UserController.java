@@ -174,14 +174,14 @@ public class UserController {
     }
 
     // 매니저가 학생 정보 수정
-    @PostMapping("/student/mod")
+    @PutMapping("/student/mod")
     public ResponseDTO<?> mod(@RequestBody StudentAdminDTO dto) {
         ResponseDTO<?> result = userService.mod(dto);
         return result;
     }
 
     // 강사, 매니저 개인정보 수정
-    @PostMapping("/academic/{uid}/update")
+    @PutMapping("/academic/{uid}/update")
     public ResponseDTO<?> academicUpdate(@PathVariable("uid") int id, @RequestBody AcademicUpdateDTO dto) {
         ResponseDTO<?> result = userService.academicUpdate(id, dto);
         return result;
