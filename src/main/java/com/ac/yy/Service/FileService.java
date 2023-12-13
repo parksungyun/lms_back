@@ -5,9 +5,8 @@ import com.ac.yy.DTO.ResponseDTO;
 import com.ac.yy.Entity.CourseEntity;
 import com.ac.yy.Entity.LectureEntity;
 import com.ac.yy.Entity.SubjectEntity;
-import com.ac.yy.Repository.AcademicRepository;
-import com.ac.yy.Repository.CourseRepository;
-import com.ac.yy.Repository.LectureRepository;
+import com.ac.yy.Entity.SubjectQuestionEntity;
+import com.ac.yy.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.UrlResource;
@@ -43,6 +42,21 @@ public class FileService {
 
     @Autowired
     LectureRepository lectureRepository;
+
+    @Autowired
+    SubjectBoardRepository subjectBoardRepository;
+
+    @Autowired
+    CourseBoardRepository courseBoardRepository;
+
+    @Autowired
+    CourseQuestionRepository courseQuestionRepository;
+
+    @Autowired
+    SubjectQuestionRepository subjectQuestionRepository;
+
+    @Autowired
+    HomeworkRepository homeworkRepository;
 
     public ResponseDTO<?> fileUpload(MultipartFile file, int id) {
         String extension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
@@ -107,7 +121,7 @@ public class FileService {
 
         try {
             file.transferTo(new File(filePath));
-            lectureRepository.modifyingFileInfoByLecturetId(id, file.getOriginalFilename(), filePath);
+            lectureRepository.modifyingFileInfoByLectureId(id, file.getOriginalFilename(), filePath);
         } catch (Exception e) {
             return ResponseDTO.setFailed("Database Error");
         }
@@ -129,7 +143,117 @@ public class FileService {
 
         try {
             file.transferTo(new File(filePath));
-            lectureRepository.modifyingVideoByLecturetId(id, filePath);
+            lectureRepository.modifyingVideoByLectureId(id, filePath);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Upload Success!", null);
+    }
+
+    public ResponseDTO<?> subjectBoardUpload(MultipartFile file, int id) {
+        String extension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+        String fileName = UUID.randomUUID().toString().concat(extension);
+        String savePath = System.getProperty("user.dir") + "\\academics";
+        if (!new File(savePath).exists()) {
+            try {
+                new File(savePath).mkdir();
+            } catch (Exception e) {
+                e.getStackTrace();
+            }
+        }
+        String filePath = savePath + "\\" + fileName;
+
+        try {
+            file.transferTo(new File(filePath));
+            subjectBoardRepository.modifyingFileInfoBySubjectBoardId(id, file.getOriginalFilename(), filePath);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Upload Success!", null);
+    }
+
+    public ResponseDTO<?> courseBoardUpload(MultipartFile file, int id) {
+        String extension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+        String fileName = UUID.randomUUID().toString().concat(extension);
+        String savePath = System.getProperty("user.dir") + "\\academics";
+        if (!new File(savePath).exists()) {
+            try {
+                new File(savePath).mkdir();
+            } catch (Exception e) {
+                e.getStackTrace();
+            }
+        }
+        String filePath = savePath + "\\" + fileName;
+
+        try {
+            file.transferTo(new File(filePath));
+            courseBoardRepository.modifyingFileInfoByCourseBoardId(id, file.getOriginalFilename(), filePath);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Upload Success!", null);
+    }
+
+    public ResponseDTO<?> courseQuestionUpload(MultipartFile file, int id) {
+        String extension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+        String fileName = UUID.randomUUID().toString().concat(extension);
+        String savePath = System.getProperty("user.dir") + "\\students";
+        if (!new File(savePath).exists()) {
+            try {
+                new File(savePath).mkdir();
+            } catch (Exception e) {
+                e.getStackTrace();
+            }
+        }
+        String filePath = savePath + "\\" + fileName;
+
+        try {
+            file.transferTo(new File(filePath));
+            courseQuestionRepository.modifyingFileInfoByCourseQuestionId(id, file.getOriginalFilename(), filePath);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Upload Success!", null);
+    }
+
+    public ResponseDTO<?> subjectQuestionUpload(MultipartFile file, int id) {
+        String extension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+        String fileName = UUID.randomUUID().toString().concat(extension);
+        String savePath = System.getProperty("user.dir") + "\\students";
+        if (!new File(savePath).exists()) {
+            try {
+                new File(savePath).mkdir();
+            } catch (Exception e) {
+                e.getStackTrace();
+            }
+        }
+        String filePath = savePath + "\\" + fileName;
+
+        try {
+            file.transferTo(new File(filePath));
+            subjectQuestionRepository.modifyingFileInfoBySubjectQuestionId(id, file.getOriginalFilename(), filePath);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Upload Success!", null);
+    }
+
+    public ResponseDTO<?> homeworkUpload(MultipartFile file, int id) {
+        String extension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+        String fileName = UUID.randomUUID().toString().concat(extension);
+        String savePath = System.getProperty("user.dir") + "\\students";
+        if (!new File(savePath).exists()) {
+            try {
+                new File(savePath).mkdir();
+            } catch (Exception e) {
+                e.getStackTrace();
+            }
+        }
+        String filePath = savePath + "\\" + fileName;
+
+        try {
+            file.transferTo(new File(filePath));
+            homeworkRepository.modifyingFileInfoByHomeworkId(id, file.getOriginalFilename(), filePath);
         } catch (Exception e) {
             return ResponseDTO.setFailed("Database Error");
         }

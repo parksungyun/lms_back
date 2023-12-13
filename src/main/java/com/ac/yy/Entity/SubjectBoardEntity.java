@@ -16,6 +16,7 @@ import java.util.Date;
 @Table(name = "subject_board")
 public class SubjectBoardEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "subject_board_id")
     private int subjectBoardId;
 

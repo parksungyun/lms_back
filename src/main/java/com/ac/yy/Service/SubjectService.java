@@ -699,12 +699,13 @@ public class SubjectService {
 
     public ResponseDTO<?> writeSubjectQuestion(SubjectQuestionWriteDTO dto) {
         SubjectQuestionEntity subjectQuestionEntity = new SubjectQuestionEntity(dto);
+        SubjectQuestionEntity result = null;
         try {
-            subjectQuestionRepository.save(subjectQuestionEntity);
+            result = subjectQuestionRepository.save(subjectQuestionEntity);
         } catch (Exception e) {
             return ResponseDTO.setFailed("Database Error");
         }
-        return ResponseDTO.setSuccess("Write Subject Question Success!", null);
+        return ResponseDTO.setSuccess("Write Subject Question Success!", result);
     }
 
     public ResponseDTO<?> writeSubjectQuestion(int id, SubjectQuestionWriteDTO dto) {
@@ -879,13 +880,14 @@ public class SubjectService {
     }
 
     public ResponseDTO<?> writeHomework(HomeworkDTO dto) {
+        HomeworkEntity result = null;
         try {
             HomeworkEntity homework = new HomeworkEntity(dto);
-            homeworkRepository.save(homework);
+            result = homeworkRepository.save(homework);
         } catch (Exception e) {
             return ResponseDTO.setFailed("Database Error");
         }
-        return ResponseDTO.setSuccess("Homework Write Success!", null);
+        return ResponseDTO.setSuccess("Homework Write Success!", result);
     }
 
     public ResponseDTO<?> writeHomework(int id, HomeworkDTO dto) {

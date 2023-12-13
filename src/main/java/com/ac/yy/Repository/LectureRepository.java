@@ -25,15 +25,15 @@ public interface LectureRepository extends JpaRepository<LectureEntity, Integer>
     @Transactional
     @Modifying
     @Query(value = "UPDATE lectures SET lectures.file_url=?3, lectures.file_name=?2 WHERE lectures.lecture_id=?1", nativeQuery = true)
-    int modifyingFileInfoByLecturetId(int lectureId, String fileName, String fileUrl);
+    int modifyingFileInfoByLectureId(int lectureId, String fileName, String fileUrl);
 
     @Transactional
     @Modifying
     @Query(value = "UPDATE lectures SET lectures.video_url=?2 WHERE lectures.lecture_id=?1", nativeQuery = true)
-    int modifyingVideoByLecturetId(int lectureId, String videoUrl);
+    int modifyingVideoByLectureId(int lectureId, String videoUrl);
 
     @Transactional
     @Modifying
     @Query(value = "UPDATE lectures SET lectures.lecture_time=?4, lectures.content=?3, lectures.title=?2 WHERE lectures.lecture_id=?1", nativeQuery = true)
-    int modifyingInfoByLecturetId(int lectureId, String title, String content, int time);
+    int modifyingInfoByLectureId(int lectureId, String title, String content, int time);
 }

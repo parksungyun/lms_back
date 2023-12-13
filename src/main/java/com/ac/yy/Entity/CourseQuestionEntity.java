@@ -16,6 +16,7 @@ import java.util.Date;
 @Table(name = "course_questions")
 public class CourseQuestionEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "course_question_id")
     private int courseQuestionId;
 

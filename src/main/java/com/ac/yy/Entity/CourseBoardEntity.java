@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @Table(name = "course_board")
 public class CourseBoardEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "course_board_id")
     private int courseBoardId;
 

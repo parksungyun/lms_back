@@ -78,8 +78,8 @@ public class FileController {
                 .body(resourceRegion);
     }
 
-    @GetMapping("/download/{name}")
-    public ResponseEntity<Resource> downloadAttach(@PathVariable String name) throws MalformedURLException {
+    @GetMapping("/download/academic/{name}")
+    public ResponseEntity<Resource> downloadAcademicAttach(@PathVariable String name) throws MalformedURLException {
 
         UrlResource urlResource = new UrlResource("file:///C:/Users/DW/Documents/lms_back/academics/" + name);
 
@@ -88,5 +88,47 @@ public class FileController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
                 .body(urlResource);
+    }
+
+    @GetMapping("/download/student/{name}")
+    public ResponseEntity<Resource> downloadStudentAttach(@PathVariable String name) throws MalformedURLException {
+
+        UrlResource urlResource = new UrlResource("file:///C:/Users/DW/Documents/lms_back/students/" + name);
+
+        String encodeUploadFileName = UriUtils.encode(name, StandardCharsets.UTF_8);
+        String contentDisposition = "attachment; filename=\"" + encodeUploadFileName + "\"";
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
+                .body(urlResource);
+    }
+
+    @PostMapping("/upload/subject/board/{id}")
+    public ResponseDTO<?> subjectBoardUpload(@RequestParam(value = "file", required = false) MultipartFile file, @PathVariable("id") int id) {
+        ResponseDTO<?> result = fileService.subjectBoardUpload(file, id);
+        return result;
+    }
+
+    @PostMapping("/upload/course/board/{id}")
+    public ResponseDTO<?> courseBoardUpload(@RequestParam(value = "file", required = false) MultipartFile file, @PathVariable("id") int id) {
+        ResponseDTO<?> result = fileService.courseBoardUpload(file, id);
+        return result;
+    }
+
+    @PostMapping("/upload/course/question/{id}")
+    public ResponseDTO<?> courseQuestionUpload(@RequestParam(value = "file", required = false) MultipartFile file, @PathVariable("id") int id) {
+        ResponseDTO<?> result = fileService.courseQuestionUpload(file, id);
+        return result;
+    }
+
+    @PostMapping("/upload/subject/question/{id}")
+    public ResponseDTO<?> subjectQuestionUpload(@RequestParam(value = "file", required = false) MultipartFile file, @PathVariable("id") int id) {
+        ResponseDTO<?> result = fileService.subjectQuestionUpload(file, id);
+        return result;
+    }
+
+    @PostMapping("/upload/homework/{id}")
+    public ResponseDTO<?> homeworkUpload(@RequestParam(value = "file", required = false) MultipartFile file, @PathVariable("id") int id) {
+        ResponseDTO<?> result = fileService.homeworkUpload(file, id);
+        return result;
     }
 }

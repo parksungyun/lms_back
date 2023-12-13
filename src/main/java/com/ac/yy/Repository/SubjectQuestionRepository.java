@@ -20,4 +20,9 @@ public interface SubjectQuestionRepository  extends JpaRepository<SubjectQuestio
     @Modifying
     @Query(value = "UPDATE subject_questions SET subject_questions.hits = subject_questions.hits + 1 WHERE subject_questions.subject_question_id=?1", nativeQuery = true)
     int modifyingHitsBySubjectQuestionId(int subjectQuestionId);
+
+    @Transactional
+    @Modifying
+    @Query(value = "UPDATE subject_questions SET subject_questions.file_url=?3, subject_questions.file_name=?2 WHERE subject_questions.subject_question_id=?1", nativeQuery = true)
+    int modifyingFileInfoBySubjectQuestionId(int subjectQuestionId, String filename, String fileurl);
 }

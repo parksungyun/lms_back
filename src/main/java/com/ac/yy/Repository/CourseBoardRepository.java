@@ -20,4 +20,9 @@ public interface CourseBoardRepository extends JpaRepository<CourseBoardEntity, 
     @Modifying
     @Query(value = "UPDATE course_board SET course_board.hits = course_board.hits + 1 WHERE course_board.course_board_id=?1", nativeQuery = true)
     int modifyingHitsByCourseBoardId(int courseBoardId);
+
+    @Transactional
+    @Modifying
+    @Query(value = "UPDATE course_board SET course_board.file_url=?3, course_board.file_name=?2 WHERE course_board.course_board_id=?1", nativeQuery = true)
+    int modifyingFileInfoByCourseBoardId(int courseBoardId, String filename, String fileurl);
 }
