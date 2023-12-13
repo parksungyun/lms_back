@@ -5,6 +5,7 @@ import com.ac.yy.Entity.LectureEntity;
 import com.ac.yy.Repository.LectureRepository;
 import com.ac.yy.Service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.core.io.support.ResourceRegion;
 import org.springframework.http.*;
@@ -77,27 +78,15 @@ public class FileController {
                 .body(resourceRegion);
     }
 
-//    @GetMapping("/downloadFile")
-//    public ResponseEntity<UrlResource> downloadBoardFile(@RequestBody String fileurl){
-//        //Body
-//        LectureEntity entity = lectureRepository.findByFileUrl(fileurl).get();
-//        UrlResource resource;
-//        try{
-//            resource = new UrlResource(fileurl);
-//        }catch (MalformedURLException e){
-//            e.getStackTrace();
-//            e.printStackTrace();
-//            throw new RuntimeException("the given URL path is not valid");
-//        }
-//        //Header
-//        String originalFileName = entity.getFileName();
-//        String encodedOriginalFileName = UriUtils.encode(originalFileName, StandardCharsets.UTF_8);
-//
-//        String contentDisposition = "attachment; filename=\"" + encodedOriginalFileName + "\"";
-//
-//        return ResponseEntity
-//                .ok()
-//                .header(HttpHeaders.CONTENT_DISPOSITION,contentDisposition)
-//                .body(resource);
-//    }
+    @GetMapping("/download/{name}")
+    public ResponseEntity<Resource> downloadAttach(@PathVariable String name) throws MalformedURLException {
+
+        UrlResource urlResource = new UrlResource("file:///C:/Users/DW/Documents/lms_back/academics/" + name);
+
+        String encodeUploadFileName = UriUtils.encode(name, StandardCharsets.UTF_8);
+        String contentDisposition = "attachment; filename=\"" + encodeUploadFileName + "\"";
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
+                .body(urlResource);
+    }
 }

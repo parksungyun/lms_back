@@ -395,4 +395,11 @@ public class SubjectController {
         ResponseDTO<?> result = subjectService.writeHomework(id, dto);
         return result;
     }
+
+    // 강사가 강의 수정
+    @PostMapping("/{state}/lecture/mod")
+    public ResponseDTO<?> modLecture(@PathVariable("state") int lectureId, @RequestBody LectureDTO dto) {
+        ResponseDTO<?> result = subjectService.modLecture(lectureId, dto);
+        return result;
+    }
 }

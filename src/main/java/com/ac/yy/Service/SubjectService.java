@@ -900,4 +900,15 @@ public class SubjectService {
         }
         return ResponseDTO.setSuccess("Homework Write Success!", null);
     }
+
+    public ResponseDTO<?> modLecture(int lectureId, LectureDTO dto) {
+        try {
+            lectureRepository.modifyingInfoByLecturetId(lectureId, dto.getTitle(), dto.getContent(), dto.getVideoTime());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Lecture Mod Success!", null);
+    }
 }
