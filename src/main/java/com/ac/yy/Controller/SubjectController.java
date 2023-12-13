@@ -402,4 +402,40 @@ public class SubjectController {
         ResponseDTO<?> result = subjectService.modLecture(lectureId, dto);
         return result;
     }
+
+
+    // 과정 공지 삭제
+    @DeleteMapping("/board/{id}/delete")
+    public ResponseDTO<?> deleteBoard(@PathVariable("id") int id) {
+        ResponseDTO<?> result = subjectService.deleteBoard(id);
+        return result;
+    }
+
+    // 과정 문의 답변 삭제
+    @DeleteMapping("/qna/reply/{id}/delete")
+    public ResponseDTO<?> deleteReply(@PathVariable("id") int id) {
+        ResponseDTO<?> result = subjectService.deleteReply(id);
+        return result;
+    }
+
+    // 과정 문의 삭제
+    @DeleteMapping("/qna/{id}/delete")
+    public ResponseDTO<?> deleteQuestion(@PathVariable("id") int id) {
+        ResponseDTO<?> result = subjectService.deleteQuestion(id);
+        return result;
+    }
+
+    // 강의 삭제
+    @DeleteMapping("/lecture/{id}/delete")
+    public ResponseDTO<?> deleteLecture(@PathVariable("id") int id) {
+        ResponseDTO<?> result = subjectService.deleteLecture(id);
+        return result;
+    }
+
+    // 과제 삭제
+    @DeleteMapping("/homework/{id}/delete")
+    public ResponseDTO<?> deleteHomework(@PathVariable("id") int id) {
+        ResponseDTO<?> result = subjectService.deleteHomework(id);
+        return result;
+    }
 }
