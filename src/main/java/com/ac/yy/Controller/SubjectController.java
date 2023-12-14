@@ -438,4 +438,11 @@ public class SubjectController {
         ResponseDTO<?> result = subjectService.deleteHomework(id);
         return result;
     }
+
+    // 과제 피드백 삭제
+    @DeleteMapping("/feedback/{id}/delete")
+    public ResponseDTO<?> deleteFeedback(@PathVariable("id") int id) {
+        ResponseDTO<?> result = subjectService.deleteFeedback(id);
+        return result;
+    }
 }

@@ -977,4 +977,13 @@ public class SubjectService {
         }
         return ResponseDTO.setSuccess("Delete Question Success!", null);
     }
+
+    public ResponseDTO<?> deleteFeedback(int id) {
+        try {
+            feedbackRepository.deleteById(id);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Delete Feedback Success!", null);
+    }
 }
