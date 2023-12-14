@@ -315,7 +315,7 @@ public class CourseService {
         } catch (Exception e) {
             return ResponseDTO.setFailed("Database Error");
         }
-        return ResponseDTO.setSuccess("Write Course Board Success!", null);
+        return ResponseDTO.setSuccess("Write Course Board Success!", result);
     }
 
     public ResponseDTO<?> writeBoard(int id, CourseBoardWriteDTO dto) {
