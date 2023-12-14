@@ -17,4 +17,9 @@ public interface SubmitRepository extends JpaRepository<SubmitEntity, Integer> {
     Optional<SubmitEntity> findByStudentIdAndHomeworkId(int studentId, int homeworkId);
     List<SubmitEntity> findByHomeworkId(int homeworkId);
     List<SubmitEntity> findByStudentId(int studentId);
+
+    @Transactional
+    @Modifying
+    @Query(value = "UPDATE submits SET submits.submit_file_url=?3, submits.submit_file_name=?2 WHERE submits.submit_id=?1", nativeQuery = true)
+    int modifyingFileInfoBySubmitId(int SubmitId, String fileName, String fileUrl);
 }

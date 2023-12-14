@@ -662,12 +662,15 @@ public class UserService {
         return ResponseDTO.setSuccess("Academic Update Success!", null);
     }
 
-    public ResponseDTO<?> approveAttendance(int id, MultipartFile file) {
+    public ResponseDTO<?> getAttendanceById(int id) {
+        AttendanceEntity result = null;
         try {
-
-        } catch (Exception e) {
+            result = attendanceRepository.findById(id).get();
+        }
+        catch (Exception e) {
             return ResponseDTO.setFailed("Database Error");
         }
-        return ResponseDTO.setSuccess("Approve Attendance Success!", null);
+
+        return ResponseDTO.setSuccess("Get Attendace Success!", result);
     }
 }

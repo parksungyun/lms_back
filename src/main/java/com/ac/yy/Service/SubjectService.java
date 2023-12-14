@@ -266,21 +266,22 @@ public class SubjectService {
 
     public ResponseDTO<?> submitHomework(SubmitWriteDTO dto) {
         SubmitEntity submit = new SubmitEntity(dto);
+        SubmitEntity result = null;
         try {
             if(submitRepository.existsByStudentIdAndHomeworkId(submit.getStudentId(), submit.getHomeworkId())) {
                 SubmitEntity temp = submitRepository.findByStudentIdAndHomeworkId(submit.getStudentId(), submit.getHomeworkId()).get();
                 temp.setSubmitContent(submit.getSubmitContent());
                 temp.setSubmitFileUrl(submit.getSubmitFileUrl());
                 temp.setSubmitFileName(submit.getSubmitFileName());
-                submitRepository.save(temp);
+                result = submitRepository.save(temp);
             }
             else {
-                submitRepository.save(submit);
+                result = submitRepository.save(submit);
             }
         } catch (Exception e) {
             return ResponseDTO.setFailed("Database Error");
         }
-        return ResponseDTO.setSuccess("Submit Success!", null);
+        return ResponseDTO.setSuccess("Submit Success!", result);
     }
 
     public ResponseDTO<?> getSubmitBySubmitId(int id) {

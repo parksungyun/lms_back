@@ -16,6 +16,7 @@ import java.util.Date;
 @Table(name = "submits")
 public class SubmitEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "submit_id")
     private int submitId;
 

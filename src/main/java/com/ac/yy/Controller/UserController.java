@@ -187,10 +187,10 @@ public class UserController {
         return result;
     }
 
-    // 출결사항 승인
-    @PutMapping("attendance/{id}/approve")
-    public ResponseDTO<?> approveAttendance(@RequestParam(value = "file") MultipartFile file, @PathVariable("id") int id) {
-        ResponseDTO<?> result = userService.approveAttendance(id, file);
+    // 출결 아이디로 출결 불러오기
+    @GetMapping("/attendance/{id}")
+    public ResponseDTO<?> getAttendanceById(@PathVariable("id") int id) {
+        ResponseDTO<?> result = userService.getAttendanceById(id);
         return result;
     }
 }
