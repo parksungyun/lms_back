@@ -70,4 +70,18 @@ public class AdmissionController {
         ResponseDTO<?> result = admissionService.writeReply(id, dto);
         return result;
     }
+
+    // 입학 상담 게시글 삭제
+    @DeleteMapping("/{id}/delete")
+    public ResponseDTO<?> deleteAdmissionQuestion(@PathVariable("id") int id) {
+        ResponseDTO<?> result = admissionService.deleteAdmissionQuestion(id);
+        return result;
+    }
+
+    // 입학 상담 답변 삭제
+    @DeleteMapping("/reply/{id}/delete")
+    public ResponseDTO<?> deleteAdmissionReply(@PathVariable("id") int id) {
+        ResponseDTO<?> result = admissionService.deleteAdmissionReply(id);
+        return result;
+    }
 }
