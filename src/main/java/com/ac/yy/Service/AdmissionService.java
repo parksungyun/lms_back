@@ -155,4 +155,25 @@ public class AdmissionService {
         }
         return ResponseDTO.setSuccess("Write Reply Success!", null);
     }
+
+    public ResponseDTO<?> deleteAdmissionQuestion(int id) {
+        try {
+            if(admissionAnswerRepository.existsById(id)) {
+                admissionAnswerRepository.deleteById(id);
+            }
+            admissionQuestionRepository.deleteById(id);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Delete Question Success!", null);
+    }
+
+    public ResponseDTO<?> deleteAdmissionReply(int id) {
+        try {
+            admissionAnswerRepository.deleteById(id);
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Delete Reply Success!", null);
+    }
 }
