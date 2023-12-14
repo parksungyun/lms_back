@@ -186,4 +186,11 @@ public class UserController {
         ResponseDTO<?> result = userService.academicUpdate(id, dto);
         return result;
     }
+
+    // 출결사항 승인
+    @PutMapping("attendance/{id}/approve")
+    public ResponseDTO<?> approveAttendance(@RequestParam(value = "file") MultipartFile file, @PathVariable("id") int id) {
+        ResponseDTO<?> result = userService.approveAttendance(id, file);
+        return result;
+    }
 }

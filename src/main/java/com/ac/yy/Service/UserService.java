@@ -6,6 +6,7 @@ import com.ac.yy.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.server.authentication.AnonymousAuthenticationWebFilter;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.text.SimpleDateFormat;
 import java.time.*;
@@ -659,5 +660,14 @@ public class UserService {
             return ResponseDTO.setFailed("Database Error");
         }
         return ResponseDTO.setSuccess("Academic Update Success!", null);
+    }
+
+    public ResponseDTO<?> approveAttendance(int id, MultipartFile file) {
+        try {
+
+        } catch (Exception e) {
+            return ResponseDTO.setFailed("Database Error");
+        }
+        return ResponseDTO.setSuccess("Approve Attendance Success!", null);
     }
 }
